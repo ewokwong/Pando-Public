@@ -1,0 +1,266 @@
+/* Base styles for auth forms */
+.auth-container {
+    position: fixed;
+    z-index: 1001;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 450px;
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  @media (max-width: 520px) {
+    .auth-container {
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+  }
+  
+  .auth-inner {
+    padding: 32px;
+  }
+  
+  /* Make login form more compact */
+  .login-form .auth-inner {
+    padding: 28px;
+  }
+  
+  .auth-header {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  
+  .login-form .auth-header {
+    margin-bottom: 20px;
+  }
+  
+  .auth-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+  }
+  
+  .auth-subtitle {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .login-form .auth-form {
+    gap: 16px;
+  }
+  
+  .form-group {
+    position: relative;
+  }
+  
+  .form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 6px;
+  }
+  
+  .form-input {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: all 0.2s ease;
+  }
+  
+  .login-form .form-input {
+    padding: 10px 14px;
+  }
+  
+  .form-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+  
+  .form-input::placeholder {
+    color: #aaa;
+  }
+  
+  .form-button {
+    width: 100%;
+    padding: 14px;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 10px;
+  }
+  
+  .login-form .form-button {
+    padding: 12px;
+    margin-top: 8px;
+  }
+  
+  .form-button:hover {
+    background-color: #2563eb;
+    transform: translateY(-1px);
+  }
+  
+  .form-button:active {
+    transform: translateY(0);
+  }
+  
+  .separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+  }
+  
+  .login-form .separator {
+    margin: 16px 0;
+  }
+  
+  .separator::before,
+  .separator::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .separator span {
+    font-size: 14px;
+    color: #888;
+    margin: 0 10px;
+  }
+  
+  .social-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 12px;
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .login-form .social-button {
+    padding: 10px;
+  }
+  
+  .social-button:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .social-button img {
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+  }
+  
+  .auth-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .login-form .auth-footer {
+    margin-top: 16px;
+  }
+  
+  .auth-link {
+    color: #3b82f6;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  
+  .auth-link:hover {
+    color: #2563eb;
+    text-decoration: underline;
+  }
+  
+  .error-message {
+    color: #ef4444;
+    font-size: 14px;
+    margin-top: 16px;
+    text-align: center;
+    padding: 8px;
+    background-color: #fee2e2;
+    border-radius: 6px;
+    border: 1px solid #fecaca;
+  }
+  
+  /* Animation classes */
+  .fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -48%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+  }
+  
+  /* Custom date input styling */
+  input[type="date"] {
+    appearance: none;
+    -webkit-appearance: none;
+    color: #333;
+    font-family: inherit;
+    font-size: 15px;
+    padding: 12px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  
+  input[type="date"]:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+  
+  /* Calendar icon styling */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0.6;
+    cursor: pointer;
+  }
+  
+  input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+  }
+  
+  

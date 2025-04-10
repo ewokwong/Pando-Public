@@ -1,0 +1,29 @@
+.google-auth-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%; /* Make button full width */
+    padding: 5px 15px;
+    margin-top: 15px;
+    font-size: 14px;
+    cursor: pointer;
+    border: none; /* Remove border */
+    border-radius: 50px; /* Fully rounded borders */
+    background-color: #fff;
+    color: #000; /* Change text color to black */
+    font-weight: bold; /* Make text bold */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .google-auth-button:hover {
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+  
+  .google-logo {
+    width: 30px;
+    height: 30px;
+    margin-right: 8px;
+  }
+  

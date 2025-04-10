@@ -1,0 +1,12 @@
+.resource-box {
+    transition: transform 0.2s ease-in-out; /* Add transition for hover effect */
+}
+
+.resource-box:hover {
+    transform: scale(1.02); /* Slightly enlarge on hover */
+}
+
+.icon-button:hover,
+.vote-button:hover {
+    background-color: #e0e0e0 !important; /* Slightly grey out on hover */
+}

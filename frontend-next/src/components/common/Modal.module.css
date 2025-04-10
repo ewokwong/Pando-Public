@@ -1,0 +1,80 @@
+/* CSS File for Modal stuff */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* High z-index to ensure it's on top */
+  }
+  
+  .modalContent {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    position: relative;
+    width: 80%;
+    max-width: 600px; /* Limit maximum width */
+    max-height: 90vh;
+    overflow-y: auto;
+    z-index: 1001; /* Even higher z-index */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .smallModalContent {
+    max-width: 400px; /* Smaller width for small modals */
+  }
+  
+  .modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 15px;
+  }
+
+  .modalHeaderText {
+    font-size: 1.2rem;
+  }
+  
+  .modalBody {
+    padding: 0;
+  }
+  
+  .modalClose {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    color: #666;
+  }
+  
+  .modalClose:hover {
+    transform: scale(1.1);
+    color: #333;
+  }
+  
+  /* Add animation for modal appearance */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .modalOverlay {
+    animation: fadeIn 0.2s ease-out;
+  }
+  
+  @keyframes slideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  
+  .modalContent {
+    animation: slideIn 0.3s ease-out;
+  }
+  
