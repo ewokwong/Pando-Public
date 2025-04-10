@@ -1,9 +1,10 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import axios from "axios"
 import { jwtDecode } from "jwt-decode"
+import type { JwtPayload } from "jwt-decode"
 import { X, Check, AlertCircle, Award, ExternalLink, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -19,7 +20,6 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({ open, o
   // State
   const [activeTab, setActiveTab] = useState("utr")
   const [userId, setUserId] = useState<string | null>(propUserId || null)
-  const [userInfo, setUserInfo] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState("")
@@ -37,7 +37,7 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({ open, o
       const token = localStorage.getItem("token")
       if (token) {
         try {
-          const decoded: any = jwtDecode(token)
+          const decoded: JwtPayload & { userId: string } = jwtDecode(token)
           setUserId(decoded.userId)
         } catch (err) {
           console.error("Error decoding token:", err)
@@ -47,15 +47,8 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({ open, o
     }
   }, [userId])
 
-  // Load user data when modal opens
-  useEffect(() => {
-    if (open && userId) {
-      loadUserData()
-    }
-  }, [open, userId])
-
   // Load user data from API
-  const loadUserData = async () => {
+  const loadUserData = useCallback(async () => {
     if (!userId) return
 
     setLoading(true)
@@ -68,7 +61,6 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({ open, o
       })
 
       const userData = response.data.user
-      setUserInfo(userData)
 
       if (userData.verified) {
         setUtrAcknowledged(true)
@@ -94,7 +86,14 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({ open, o
     } finally {
       setLoading(false)
     }
-  }
+  }, [userId, locationCompleted, utrCompleted])
+
+  // Load user data when modal opens
+  useEffect(() => {
+    if (open && userId) {
+      loadUserData()
+    }
+  }, [open, userId, loadUserData])
 
   // Save UTR acknowledgment
   const saveUtrAcknowledgment = async () => {

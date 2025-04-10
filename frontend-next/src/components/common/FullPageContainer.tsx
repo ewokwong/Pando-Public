@@ -9,7 +9,6 @@ import ProfileCompletionHeader from "./ProfileCompletionHeader"
 
 interface FullPageContainerProps {
   children: ReactNode
-  [key: string]: any
 }
 
 const FullPageContainer: React.FC<FullPageContainerProps> = ({ children, ...props }) => {

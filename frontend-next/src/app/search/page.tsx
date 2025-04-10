@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 import UserProfileDisplay from "@/components/common/UserProfileDisplay"
 import FullPageContainer from "@/components/common/FullPageContainer"
 import { Button } from "@/components/ui/button"
-import { Search, Users, RefreshCw, X, Check, Info } from "lucide-react"
+import { Search, Users, RefreshCw, X, Info } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { DEFAULT_PROFILE_PHOTO } from "@/constants/defaults"
@@ -17,7 +17,15 @@ const SearchPage = () => {
 
   const [userId, setUserId] = useState<string | null>(null)
   const [possibleConnections, setPossibleConnections] = useState<string[]>([])
-  const [userProfile, setUserProfile] = useState<{ id: string } | null>(null)
+  type UserProfile = {
+    id: string
+    name: string
+    email: string
+    profilePhoto: string
+    media: string[]
+  }
+
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [showTip, setShowTip] = useState(true)
 
@@ -40,7 +48,7 @@ const SearchPage = () => {
         .get(`http://localhost:5001/api/user/${userId}`, {
           headers: { Authorization: `Bearer ${userToken}` },
         })
-        .then((response) => {
+        .then(() => {
           setIsLoading(false)
         })
         .catch((err) => {
@@ -73,7 +81,13 @@ const SearchPage = () => {
         .then((response) => {
           // Add a small delay for smoother transition
           setTimeout(() => {
-            setUserProfile(response.data.user)
+            setUserProfile({
+              id: response.data.user.id,
+              name: response.data.user.name || "Unknown",
+              email: response.data.user.email || "Unknown",
+              profilePhoto: response.data.user.profilePhoto || DEFAULT_PROFILE_PHOTO,
+              media: response.data.user.media || [],
+            })
           }, 300)
         })
         .catch((err) => {
@@ -106,8 +120,7 @@ const SearchPage = () => {
       // If request is sent, send an email to the receiver
       if (newStatus === "pending") {
         await axios.post("http://localhost:5001/api/email/connection-invite", {
-          receiverEmail: "ewokwong@gmail.com",
-          // receiverEmail: receiver.email,
+          receiverEmail: receiver.email,
           requesterName: sender.name,
           requesterPhoto: sender.profilePhoto || DEFAULT_PROFILE_PHOTO,
           requesterId: senderId,
@@ -300,12 +313,14 @@ const SearchPage = () => {
                   transition={{ duration: 0.3 }}
                 >
                   <div className="relative">
-                    <UserProfileDisplay
-                      userProfile={userProfile}
-                      userId={userId || ""}
-                      possibleConnections={possibleConnections}
-                      handleOutgoingRequest={handleOutgoingRequest}
-                    />
+                    {userProfile && (
+                      <UserProfileDisplay
+                        userProfile={userProfile}
+                        userId={userId || ""}
+                        possibleConnections={possibleConnections}
+                        handleOutgoingRequest={handleOutgoingRequest}
+                      />
+                    )}
                   </div>
                 </motion.div>
               )}

@@ -27,7 +27,7 @@ interface UserProfileOverviewProps {
       fitness?: boolean
       learning_tennis?: boolean
     }
-    [key: string]: any
+    [key: string]: unknown // Replaced 'any' with 'unknown'
   }
   userId: string
   handleOutgoingRequest: (senderId: string, receiverId: string, newStatus: string) => void
@@ -46,8 +46,8 @@ const UserProfileOverview: React.FC<UserProfileOverviewProps> = ({
 
   const activePreferences = user.userPreferences
     ? Object.entries(user.userPreferences)
-        .filter(([_, value]) => value)
-        .map(([key, _]) => getPreferenceLabel(key))
+        .filter(([value]) => value)
+        .map(([key]) => getPreferenceLabel(key)) // Removed unused '_'
     : []
 
   const getCompatibilityColor = (value: number): string => {
@@ -210,7 +210,7 @@ const UserProfileOverview: React.FC<UserProfileOverviewProps> = ({
                   onClick={(e) => {
                     e.stopPropagation()
                     console.log("UserProfileOverview", userId, "is going to accept request from", user.userId) // Debug log
-                    handleOutgoingRequest(userId, user.userId, "accepted")
+                    handleOutgoingRequest(userId, user.userId as string, "accepted")
                   }}
                   className="rounded-full border-green-200 text-green-600 hover:bg-green-50 hover:text-green-700"
                 >
@@ -229,7 +229,7 @@ const UserProfileOverview: React.FC<UserProfileOverviewProps> = ({
                   onClick={(e) => {
                     e.stopPropagation()
                     console.log("UserOutboundProfileOverview - Passing user.id as receiverId:", user.id) // Debug log
-                    handleOutgoingRequest(userId, user.userId, "rejected")
+                    handleOutgoingRequest(userId, user.userId as string, "rejected")
                   }}
                   className="rounded-full border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
                 >

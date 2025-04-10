@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ResourceBox from './ResourceBox';
-import { Search, Filter, Loader2, AlertCircle, BookOpen, BookOpenCheck } from 'lucide-react';
+import { Search, Filter, Loader2, AlertCircle, BookOpen } from 'lucide-react';
 
 // Define the type for a single resource
 interface Resource {
@@ -15,7 +15,6 @@ interface Resource {
     created_by: string;
     upvoted_by: string[];
     downvoted_by: string[];
-    [key: string]: any;
 }
 
 const ResourceContainer: React.FC = () => {

@@ -28,7 +28,7 @@ export default function UnderDevelopmentPage({ searchParams }: PageProps) {
               <Construction className="w-10 h-10 text-amber-600" />
             </div>
             <h1 className="text-3xl font-bold text-gray-900 mb-4">{title}</h1>
-            <p className="text-lg text-gray-600">We're currently working on this feature. Please check back soon!</p>
+            <p className="text-lg text-gray-600">We&apos;re currently working on this feature. Please check back soon!</p>
           </div>
 
           <button

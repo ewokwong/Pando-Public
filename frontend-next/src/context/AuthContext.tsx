@@ -3,7 +3,7 @@
 
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios'; // Import AxiosError for better error typing
 
 // Define the shape of the decoded JWT token
 interface DecodedToken {
@@ -11,12 +11,29 @@ interface DecodedToken {
     exp: number;
 }
 
-// Define the shape of the user object (adjust based on your API response)
+// Define the shape of the user object (adjusted to match MongoDB schema)
 interface UserObject {
     id: string;
-    name: string;
+    firebaseUID?: string;
     email: string;
-    [key: string]: any; // Allow additional properties
+    name: string;
+    password?: string;
+    profilePhoto: string;
+    verified: boolean;
+    UTR?: number;
+    dob?: string;
+    bio: string;
+    friends: string[]; // Array of user IDs
+    media: string[]; // Array of media URLs
+    location: string;
+    createdAt: string;
+    userPreferences: {
+        fun_social: boolean;
+        training_for_competitions: boolean;
+        fitness: boolean;
+        learning_tennis: boolean;
+    };
+    profileComplete: boolean;
 }
 
 // Define the shape of the AuthContext
@@ -65,14 +82,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                             headers: { Authorization: `Bearer ${token}` },
                         })
                         .then((response) => {
-                            setUserObject(response.data); // Store the user object
+                            const userData: UserObject = response.data; // Adjusted to match new structure
+                            setUserObject(userData); // Store the user object
+                        })
+                        .catch((fetchError: AxiosError) => {
+                            console.error('Error fetching user object:', fetchError.message);
                         });
 
                     setIsLoggedIn(true);
                 } else {
                     setIsLoggedIn(false); // Token expired
                 }
-            } catch (error) {
+            } catch (decodeError) {
+                console.error('Error decoding token:', decodeError);
                 setIsLoggedIn(false); // Invalid token
             }
         } else {
@@ -104,10 +126,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
                 setErrorMessage(null); // Clear any previous error messages
             }
-        } catch (error: any) {
-            if (error.response && error.response.status === 400) {
-                setErrorMessage(error.response.data.message); // Set error message
-                return error.response.data.message;
+        } catch (error: AxiosError | unknown) {
+            if (axios.isAxiosError(error) && error.response && error.response.status === 400) {
+                setErrorMessage(error.response.data.message as string); // Set error message
+                return error.response.data.message as string;
             } else {
                 const genericError = 'Something went wrong. Please try again.';
                 setErrorMessage(genericError); // Set generic error message
@@ -146,10 +168,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 setErrorMessage(null); // Clear any previous error messages
                 return response.data.message;
             }
-        } catch (error: any) {
-            if (error.response && error.response.status === 400) {
-                setErrorMessage(error.response.data.message); // Set error message
-                return error.response.data.message;
+        } catch (error: AxiosError | unknown) {
+            if (axios.isAxiosError(error) && error.response && error.response.status === 400) {
+                setErrorMessage(error.response.data.message as string); // Set error message
+                return error.response.data.message as string;
             } else {
                 const genericError = 'Something went wrong. Please try again.';
                 setErrorMessage(genericError); // Set generic error message

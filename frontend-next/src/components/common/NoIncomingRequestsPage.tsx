@@ -15,7 +15,7 @@ const NoIncomingRequestsPage = () => {
           <h2 className="text-2xl font-bold text-gray-900 mb-3">No Connection Requests</h2>
 
           <p className="text-gray-600 mb-6">
-            You don't have any incoming connection requests at the moment. Start expanding your tennis network!
+            You don&apos;t have any incoming connection requests at the moment. Start expanding your tennis network!
           </p>
 
           <Link href="/search" legacyBehavior>

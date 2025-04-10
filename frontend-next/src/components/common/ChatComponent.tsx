@@ -10,9 +10,10 @@ import { Send, Info, ArrowDown } from "lucide-react"
 import UserOutboundProfileModal from "./UserOutboundProfileModal"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
+import type { Message, OtherUser, NewMessage, Socket } from "@/types/types"
 
 // Connect to socket
-let socket: any
+let socket: Socket | null = null
 
 // Initialize socket only on client side
 if (typeof window !== "undefined") {
@@ -26,28 +27,9 @@ const ChatComponent = ({ userId }: { userId: string }) => {
   const lastMessageRef = useRef<HTMLDivElement>(null)
 
   // State
-  const [otherUser, setOtherUser] = useState<{
-    id?: string
-    _id?: string
-    userId?: string
-    name: string
-    profilePhoto?: string
-    bio?: string
-    location?: string
-    UTR?: string
-    dob?: string
-    media?: string[]
-    userPreferences?: {
-      fun_social?: boolean
-      training_for_competitions?: boolean
-      fitness?: boolean
-      learning_tennis?: boolean
-    }
-  } | null>(null)
+  const [otherUser, setOtherUser] = useState<OtherUser | null>(null)
   const [message, setMessage] = useState("")
-  const [messages, setMessages] = useState<
-    { senderId: string; content: string; senderName: string; timestamp?: Date; _id?: string }[]
-  >([])
+  const [messages, setMessages] = useState<Message[]>([])
   const [isTyping, setIsTyping] = useState(false)
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const [page, setPage] = useState(1)
@@ -132,7 +114,7 @@ const ChatComponent = ({ userId }: { userId: string }) => {
     // Join chat for socket updates
     if (socket) {
       socket.emit("joinChat", chatId)
-      socket.on("newMessage", (newMessage: any) => {
+      socket.on("newMessage", (newMessage: NewMessage) => {
         // Only add the message if it's not from the current user
         // This prevents duplicates when we send a message
         if (newMessage.senderId !== userId) {
@@ -150,7 +132,14 @@ const ChatComponent = ({ userId }: { userId: string }) => {
             if (messageExists) {
               return prev
             }
-            return [...prev, newMessage]
+
+            // Transform NewMessage into Message by adding senderName
+            const transformedMessage: Message = {
+              ...newMessage,
+              senderName: otherUser?.name || "Unknown", // Add senderName
+            }
+
+            return [...prev, transformedMessage]
           })
           setShouldScrollToBottom(true)
         }
@@ -255,13 +244,6 @@ const ChatComponent = ({ userId }: { userId: string }) => {
     } else if (socket) {
       socket.emit("typing", chatId)
     }
-  }
-
-  const handleOutgoingRequest = (senderId: string, receiverId: string, newStatus: string) => {
-    console.log("Handling outgoing request:", senderId, receiverId, newStatus)
-    // Here you would typically make an API call to update the connection status
-    // For now, we'll just close the modal
-    setIsProfileModalOpen(false)
   }
 
   if (!chatId) {

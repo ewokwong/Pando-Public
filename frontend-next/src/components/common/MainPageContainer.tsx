@@ -4,7 +4,6 @@ import React, { ReactNode } from 'react';
 
 interface MainPageContainerProps {
     children: ReactNode;
-    [key: string]: any;
 }
 
 const MainPageContainer: React.FC<MainPageContainerProps> = ({ children, ...props }) => {

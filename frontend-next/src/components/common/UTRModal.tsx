@@ -91,7 +91,7 @@ const FindFriendsModal: React.FC<FindFriendsModalProps> = ({ open, onClose, user
             <CheckCircle size={20} className="text-green-600 mt-0.5 flex-shrink-0" />
             <p className="text-green-700 text-sm">
               After submitting the form, our team will review your information, assign you a rating, and verify your
-              account on the Pando network. You'll receive an email confirmation when the process is complete.
+              account on the Pando network. You&apos;ll receive an email confirmation when the process is complete.
             </p>
           </div>
         </div>
@@ -99,7 +99,7 @@ const FindFriendsModal: React.FC<FindFriendsModalProps> = ({ open, onClose, user
         {/* Action Buttons */}
         <div className="flex justify-end gap-3 px-6 pb-6 border-t border-gray-100">
           <Button variant="outline" onClick={handleSubmit} className="px-4 py-2 bg-brand-500 hover:bg-brand-600">
-            I've Completed the Form
+            I&apos;ve Completed the Form
           </Button>
         </div>
       </div>

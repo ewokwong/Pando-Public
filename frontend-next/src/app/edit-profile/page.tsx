@@ -29,9 +29,22 @@ import { DEFAULT_PROFILE_PHOTO } from "@/constants/defaults"
 import { Dialog } from "@mui/material"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
+// Define a User type to replace 'any'
+type User = {
+  userId: string;
+  name: string;
+  dob?: string;
+  UTR?: string;
+  bio?: string;
+  location?: string;
+  profilePhoto?: string;
+  media?: string[];
+  userPreferences?: Record<string, boolean>;
+};
+
 const EditProfilePage = () => {
   // User data state
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("profile")
 
@@ -104,7 +117,7 @@ const EditProfilePage = () => {
 
   // Handle file selection for media upload
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files?.[0] as File | undefined
     if (file) {
       const maxImageSize = 10 * 1024 * 1024 // 10MB
       const maxVideoSize = 100 * 1024 * 1024 // 100MB
@@ -146,10 +159,13 @@ const EditProfilePage = () => {
         },
       })
 
-      setUser((prevUser: any) => ({
-        ...prevUser,
-        media: [...(prevUser.media || []), response.data.mediaUrl],
-      }))
+      setUser((prevUser: User | null) => {
+        if (!prevUser) return null;
+        return {
+          ...prevUser,
+          media: [...(prevUser.media || []), response.data.mediaUrl],
+        };
+      })
 
       setSelectedFile(null)
       setSuccessMessage("Media uploaded successfully!")
@@ -158,12 +174,14 @@ const EditProfilePage = () => {
       if (fileInputRef.current) {
         fileInputRef.current.value = ""
       }
-    } catch (error: any) {
-      if (error.response && error.response.status === 400) {
-        setErrorMessage(error.response.data.message || "Error uploading media")
-      } else {
-        console.error("Error uploading media:", error)
-        setErrorMessage("Failed to upload media. Please try again.")
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response && error.response.status === 400) {
+          setErrorMessage(error.response.data.message || "Error uploading media")
+        } else {
+          console.error("Error uploading media:", error)
+          setErrorMessage("Failed to upload media. Please try again.")
+        }
       }
     } finally {
       setIsUploading(false)
@@ -196,10 +214,13 @@ const EditProfilePage = () => {
         data: { mediaUrl: mediaToDelete },
       })
 
-      setUser((prevUser: any) => ({
-        ...prevUser,
-        media: prevUser.media.filter((url: string) => url !== mediaToDelete),
-      }))
+      setUser((prevUser: User | null) => {
+        if (!prevUser) return null;
+        return {
+          ...prevUser,
+          media: prevUser.media?.filter((url: string) => url !== mediaToDelete) || [],
+        };
+      })
 
       setSuccessMessage("Media deleted successfully")
     } catch (error) {
@@ -212,7 +233,7 @@ const EditProfilePage = () => {
 
   // Handle profile photo change
   const handleProfilePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files?.[0] as File | undefined
     if (file) {
       setNewProfilePhoto(file)
       // Create a temporary URL for the new profile photo
@@ -246,10 +267,13 @@ const EditProfilePage = () => {
         },
       )
 
-      setUser((prevUser: any) => ({
-        ...prevUser,
-        profilePhoto: response.data.profilePhotoUrl,
-      }))
+      setUser((prevUser: User | null) => {
+        if (!prevUser) return null;
+        return {
+          ...prevUser,
+          profilePhoto: response.data.profilePhotoUrl,
+        };
+      })
 
       setSuccessMessage("Profile photo updated successfully!")
       setNewProfilePhoto(null)
@@ -295,10 +319,13 @@ const EditProfilePage = () => {
         },
       )
 
-      setUser((prevUser: any) => ({
-        ...prevUser,
-        bio: response.data.bio,
-      }))
+      setUser((prevUser: User | null) => {
+        if (!prevUser) return null;
+        return {
+          ...prevUser,
+          bio: response.data.bio,
+        };
+      });
 
       setIsEditingBio(false)
       setSuccessMessage("Bio updated successfully!")
@@ -326,7 +353,7 @@ const EditProfilePage = () => {
 
     try {
       setErrorMessage("")
-      const response = await axios.put(
+      await axios.put(
         `http://localhost:5001/api/user/${user.userId}/update-location`,
         { city: newLocation },
         {
@@ -336,10 +363,13 @@ const EditProfilePage = () => {
         },
       )
 
-      setUser((prevUser: any) => ({
-        ...prevUser,
-        location: newLocation,
-      }))
+      setUser((prevUser: User | null) => {
+        if (!prevUser) return null;
+        return {
+          ...prevUser,
+          location: newLocation,
+        };
+      })
 
       setIsEditingLocation(false)
       setSuccessMessage("Location updated successfully!")
@@ -350,7 +380,7 @@ const EditProfilePage = () => {
   }
 
   // Preferences functions
-  const handlePreferenceToggle = (key: string) => {
+  const handlePreferenceToggle = (key: keyof User["userPreferences"]) => {
     // Always create a new object to ensure state update
     setUpdatedPreferences((prev) => {
       const newPreferences = { ...(prev || user?.userPreferences || {}) }
@@ -379,10 +409,13 @@ const EditProfilePage = () => {
       )
 
       // Update the user state with the new preferences
-      setUser((prevUser: any) => ({
-        ...prevUser,
-        userPreferences: { ...response.data.preferences },
-      }))
+      setUser((prevUser: User | null) => {
+        if (!prevUser) return null;
+        return {
+          ...prevUser,
+          userPreferences: { ...response.data.preferences },
+        };
+      })
 
       // Make sure to create a new object for updatedPreferences
       setUpdatedPreferences({ ...response.data.preferences })
@@ -761,17 +794,19 @@ const EditProfilePage = () => {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {user?.userPreferences &&
                           Object.entries(user.userPreferences).map(([key, value]) => {
-                            // Use updatedPreferences if available, otherwise fall back to user preferences
-                            const isSelected = updatedPreferences ? Boolean(updatedPreferences[key]) : Boolean(value)
+                            const preferenceKey = key as keyof User["userPreferences"]; // Explicitly cast key
+                            const isSelected = updatedPreferences
+                              ? Boolean(updatedPreferences[preferenceKey])
+                              : Boolean(value)
 
                             return (
                               <div
-                                key={key}
-                                className={`px-4 py-3 rounded-lg cursor-pointer flex items-center ${getPreferenceColor(key, isSelected)}`}
-                                onClick={() => handlePreferenceToggle(key)}
+                                key={preferenceKey}
+                                className={`px-4 py-3 rounded-lg cursor-pointer flex items-center ${getPreferenceColor(preferenceKey, isSelected)}`}
+                                onClick={() => handlePreferenceToggle(preferenceKey)} // Use the casted key
                               >
                                 <Heart size={18} className={`mr-2 ${isSelected ? "fill-current" : ""}`} />
-                                <span className="font-medium">{formatPreferenceLabel(key)}</span>
+                                <span className="font-medium">{formatPreferenceLabel(preferenceKey)}</span>
                               </div>
                             )
                           })}

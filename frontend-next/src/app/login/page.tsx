@@ -28,6 +28,7 @@ const LoginPage: React.FC = () => {
       }
     } catch (error) {
       setMessage(errorMessage || "Login failed. Please check your credentials.")
+      console.error("Login error:", error)
     } finally {
       setIsLoading(false)
     }
@@ -114,7 +115,7 @@ const LoginPage: React.FC = () => {
             {message && <div className="error-message">{message}</div>}
 
             <div className="auth-footer">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link href="/sign-up" className="auth-link">
                 Sign up
               </Link>

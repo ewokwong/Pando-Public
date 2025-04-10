@@ -13,7 +13,7 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ className }) => {
   const { setUserObject, setIsLoggedIn } = useAuth(); // Ensure these are destructured correctly
 
   // Function to handle sign-in and update AuthContext
-  const handleSignIn = (token: string, user: any) => {
+  const handleSignIn = (token: string, user: { uid: string; email: string | null; displayName: string | null; photoURL: string | null }) => {
     // Store token in localStorage
     localStorage.setItem('token', token);
 
@@ -21,7 +21,25 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ className }) => {
     setIsLoggedIn(true);
 
     // Set user object
-    setUserObject(user);
+    setUserObject({
+              id: user.uid,
+              name: user.displayName || '',
+              email: user.email || '',
+              profilePhoto: user.photoURL || '',
+              verified: false, // Set default or appropriate value
+              bio: '', // Add default or derived value
+              friends: [], // Add default or derived value
+              media: [], // Add default or derived value
+              location: '', // Add default or derived value
+              createdAt: new Date().toISOString(), // Add default or derived value
+              userPreferences: {
+                fun_social: false,
+                training_for_competitions: false,
+                fitness: false,
+                learning_tennis: false,
+              }, // Add default or derived value
+              profileComplete: false, // Add default or derived value
+            });
 
     // Navigate to the homepage
     window.location.href = '/'; // Use window.location.href for navigation
@@ -45,9 +63,18 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ className }) => {
       console.log('New user created:', response.data);
 
       // Call handleSignIn to update AuthContext and navigate
-      handleSignIn(newUserToken, response.data.user); // Use the custom JWT token from the backend
-    } catch (error: any) {
-      console.error('Error creating new user:', error.message);
+      handleSignIn(newUserToken, {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL || '',
+      }); // Use the custom JWT token from the backend
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error('Error creating new user:', error.message);
+      } else {
+        console.error('Error creating new user:', error);
+      }
     }
   };
 
@@ -84,16 +111,20 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ className }) => {
         // Call handleSignIn to update AuthContext and navigate
         handleSignIn(userToken, userDetails.user); // Use the custom JWT token from the backend
 
-      } catch (apiError: any) {
-        if (apiError.response && apiError.response.status === 404) {
-          console.log('User does not exist in the database. Creating a new user...');
-          await createNewFirebaseUser(user); // Call the function to create a new user
+      } catch (error) {
+        if (axios.isAxiosError(error)) { // Corrected isAxiosError usage
+          if (error.response && error.response.status === 404) {
+            console.log('User does not exist in the database. Creating a new user...');
+            await createNewFirebaseUser(user); // Call the function to create a new user
+          } else {
+            console.error('Error retrieving user from the database:', error.message); // Fixed variable name
+            window.alert('Error retrieving user from the database. Please try again later.');
+          }
         } else {
-          console.error('Error retrieving user from the database:', apiError.message);
-          window.alert('Error retrieving user from the database. Please try again later.');
+          console.error('Unexpected error:', error); // Handle non-Axios errors
         }
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error during Google Sign-In:', error);
       // Optionally, show a fallback message or log the error
     }

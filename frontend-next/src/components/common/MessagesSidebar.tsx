@@ -1,14 +1,14 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import axios from "axios"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { MessageSquare, Users, Clock } from "lucide-react"
 import { io } from "socket.io-client"
 
-// Connect to socket
-let socket: any
+// Define the socket type explicitly
+let socket: ReturnType<typeof io> | null = null
 
 // Initialize socket only on client side
 if (typeof window !== "undefined") {
@@ -73,52 +73,63 @@ const MessagesSidebar = ({ userId, currentChatId }: MessagesSidebarProps) => {
     }
   }, [userId])
 
-  // Now, update the handleNewMessage function in the socket listener useEffect:
-
-  // Listen for new messages
-  const handleNewMessage = (message: any) => {
-    console.log("New message received via socket:", message)
-
-    setChats((prevChats) => {
-      // Find the chat that received the new message
-      const chatIndex = prevChats.findIndex((chat) => chat._id === message.chatId)
-
-      if (chatIndex === -1) return prevChats // Chat not found
-
-      // Create a copy of the chats array
-      const updatedChats = [...prevChats]
-      const chat = { ...updatedChats[chatIndex] }
-
-      // Update the chat with the new message
-      chat.lastMessage = {
-        content: message.content,
-        timestamp: message.timestamp || new Date().toISOString(),
-        senderId: message.senderId,
-      }
-
-      // Increment unread count if not the current chat
-      chat.unreadCount = currentChatId === chat._id ? 0 : (chat.unreadCount || 0) + 1
-
-      // Replace the chat in the array
-      updatedChats[chatIndex] = chat
-
-      // Remove the chat from its current position
-      const [movedChat] = updatedChats.splice(chatIndex, 1)
-
-      // Add it to the beginning of the array
-      updatedChats.unshift(movedChat)
-
-      // Trigger animation for this chat
-      setAnimatingChatId(movedChat._id)
-
-      // Clear animation after a delay
-      setTimeout(() => {
-        setAnimatingChatId(null)
-      }, 1000)
-
-      return updatedChats
-    })
+  // Define the type for the message received via socket
+  interface SocketMessage {
+    chatId: string
+    content: string
+    timestamp?: string
+    senderId: string
+    media?: string // Optional URL for attachments
+    status?: 'sent' | 'delivered' | 'read' // Message status
   }
+
+  // Wrap handleNewMessage in useCallback
+  const handleNewMessage = useCallback(
+    (message: SocketMessage) => {
+      console.log("New message received via socket:", message)
+
+      setChats((prevChats) => {
+        // Find the chat that received the new message
+        const chatIndex = prevChats.findIndex((chat) => chat._id === message.chatId)
+
+        if (chatIndex === -1) return prevChats // Chat not found
+
+        // Create a copy of the chats array
+        const updatedChats = [...prevChats]
+        const chat = { ...updatedChats[chatIndex] }
+
+        // Update the chat with the new message
+        chat.lastMessage = {
+          content: message.content,
+          timestamp: message.timestamp || new Date().toISOString(),
+          senderId: message.senderId,
+        }
+
+        // Increment unread count if not the current chat
+        chat.unreadCount = currentChatId === chat._id ? 0 : (chat.unreadCount || 0) + 1
+
+        // Replace the chat in the array
+        updatedChats[chatIndex] = chat
+
+        // Remove the chat from its current position
+        const [movedChat] = updatedChats.splice(chatIndex, 1)
+
+        // Add it to the beginning of the array
+        updatedChats.unshift(movedChat)
+
+        // Trigger animation for this chat
+        setAnimatingChatId(movedChat._id)
+
+        // Clear animation after a delay
+        setTimeout(() => {
+          setAnimatingChatId(null)
+        }, 1000)
+
+        return updatedChats
+      })
+    },
+    [currentChatId] // Dependencies for useCallback
+  )
 
   useEffect(() => {
     if (!socket || !userId) return
@@ -133,10 +144,10 @@ const MessagesSidebar = ({ userId, currentChatId }: MessagesSidebarProps) => {
     // Clean up on unmount
     return () => {
       console.log("Cleaning up socket listeners")
-      socket.off("newMessage", handleNewMessage)
-      socket.emit("leaveUserRoom", userId)
+      socket?.off("newMessage", handleNewMessage)
+      socket?.emit("leaveUserRoom", userId)
     }
-  }, [userId, currentChatId])
+  }, [userId, currentChatId, handleNewMessage]) // Add handleNewMessage to the dependency array
 
   // Reset unread count when changing chats
   useEffect(() => {

@@ -1,6 +1,6 @@
 import type React from "react"
 import Link from "next/link"
-import { ExternalLink, Mail, Instagram, Heart } from "lucide-react"
+import { ExternalLink, Mail, Instagram } from "lucide-react"
 
 const Footer: React.FC = () => {
   return (

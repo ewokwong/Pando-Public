@@ -4,17 +4,25 @@ import type React from "react"
 import UserOutboundProfileOverview from "./UserOutboundProfileOverview"
 import { motion } from "framer-motion"
 
-interface UserProfileDisplayProps {
-  userProfile: any // Replace 'any' with the appropriate type if known
-  userId: string // Assuming userId is a string, adjust the type if necessary
-  possibleConnections: string[] // Replace 'any' with the appropriate type if known
-  handleOutgoingRequest: (senderId: string, receiverId: string, newStatus: string) => void // Adjust the function signature if necessary
+interface UserProfile {
+  id: string
+  name: string
+  email: string
+  profilePhoto: string
+  media: string[]
+  // Add other relevant fields for the user profile
+}
+
+export interface UserProfileDisplayProps {
+  userProfile: UserProfile;
+  userId: string;
+  possibleConnections: string[]; // Added this line
+  handleOutgoingRequest: (senderId: string, receiverId: string, newStatus: string) => Promise<void>;
 }
 
 const UserProfileDisplay: React.FC<UserProfileDisplayProps> = ({
   userProfile,
   userId,
-  possibleConnections,
   handleOutgoingRequest,
 }) => {
   console.log("userID is", userId)
@@ -41,7 +49,7 @@ const UserProfileDisplay: React.FC<UserProfileDisplayProps> = ({
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
         >
           <UserOutboundProfileOverview
-            user={userProfile}
+            user={{ ...userProfile, userId }}
             userId={userId}
             handleOutgoingRequest={handleOutgoingRequest}
           />

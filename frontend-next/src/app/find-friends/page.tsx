@@ -6,26 +6,12 @@ import { jwtDecode } from "jwt-decode"
 import Link from "next/link"
 import { useAuth } from "@/context/AuthContext"
 import FullPageContainer from "@/components/common/FullPageContainer"
-import { UserPlus, Search, Mail, X, Check, Trophy, MapPin } from "lucide-react"
+import { UserPlus, Search, Mail, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import UserProfileOverview from "@/components/common/UserProfileOverview"
 import { DEFAULT_PROFILE_PHOTO } from "@/constants/defaults"
-
-// Helper function to calculate age from date of birth
-const calculateAge = (dob: string) => {
-  const birthDate = new Date(dob)
-  const today = new Date()
-  let age = today.getFullYear() - birthDate.getFullYear()
-  const monthDiff = today.getMonth() - birthDate.getMonth()
-
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-    age--
-  }
-
-  return age
-}
 
 const FindFriendsPage = () => {
   const { isLoggedIn } = useAuth()
@@ -69,7 +55,7 @@ const FindFriendsPage = () => {
         .get(`http://localhost:5001/api/user/${userId}`, {
           headers: { Authorization: `Bearer ${userToken}` },
         })
-        .then((response) => {
+        .then(() => {
           return axios.get(`http://localhost:5001/api/user/${userId}/getIncomingRequests?status=pending`, {
             headers: { Authorization: `Bearer ${userToken}` },
           })
@@ -364,7 +350,7 @@ const FindFriendsPage = () => {
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.2 }}
                 >
-                  You don't have any connection requests at the moment. Begin expanding your tennis network with the top
+                  You don&apos;t have any connection requests at the moment. Begin expanding your tennis network with the top
                   right button!
                 </motion.p>
 

@@ -8,7 +8,6 @@ import ProfileCompletionModal from "./ProfileCompletionModal"
 const ProfileCompletionHeader = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isProfileComplete, setIsProfileComplete] = useState(false)
-  const [isVisible, setIsVisible] = useState(true)
   const { userObject, isLoggedIn } = useAuth()
 
   // Check if profile is complete when user object changes
@@ -18,7 +17,7 @@ const ProfileCompletionHeader = () => {
       const hasProfilePhoto = userObject.profilePhoto && userObject.profilePhoto !== "/placeholder.svg"
       const hasBio = !!userObject.bio
       const hasPreferences =
-        userObject.userPreferences && Object.values(userObject.userPreferences).some((val: any) => val === true)
+        userObject.userPreferences && Object.values(userObject.userPreferences).some((val: boolean) => val === true)
 
       const isComplete = hasProfilePhoto && hasBio && hasPreferences
       setIsProfileComplete(isComplete || !!userObject.profileComplete)
@@ -26,7 +25,7 @@ const ProfileCompletionHeader = () => {
   }, [userObject, isLoggedIn])
 
   // Don't show if user is not logged in or profile is already complete
-  if (!isLoggedIn || isProfileComplete || !isVisible) {
+  if (!isLoggedIn || isProfileComplete) {
     return null
   }
 

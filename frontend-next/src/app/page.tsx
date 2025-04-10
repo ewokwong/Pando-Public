@@ -1,13 +1,13 @@
 "use client"
 
 import type React from "react"
-import { useState, type ChangeEvent, type FormEvent } from "react"
+// import { useState, type ChangeEvent, type FormEvent } from "react"
 import FullPageContainer from "@/components/common/FullPageContainer"
-import Modal from "../components/common/Modal"
-import SmallModal from "../components/common/SmallModal"
-import axios from "axios"
-import { jwtDecode } from "jwt-decode"
-import { useAuth } from "@/context/AuthContext"
+// import Modal from "../components/common/Modal"
+// import SmallModal from "../components/common/SmallModal"
+// import axios from "axios"
+// import { jwtDecode } from "jwt-decode"
+// import { useAuth } from "@/context/AuthContext"
 import {
   Info,
   Book,
@@ -23,128 +23,128 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 
 // Define the type for resource data
-interface ResourceData {
-  title: string
-  description: string
-  level: string
-  tags: Record<string, boolean>
-}
+// interface ResourceData {
+//   title: string
+//   description: string
+//   level: string
+//   tags: Record<string, boolean>
+// }
 
 const HomePage: React.FC = () => {
-  const { isLoggedIn } = useAuth()
-  const [isCreateResourceModalOpen, setCreateResourceModalOpen] = useState(false)
-  const [isLoginAlertModalOpen, setLoginAlertModalOpen] = useState(false)
-  const [resourceData, setResourceData] = useState<ResourceData>({
-    title: "",
-    description: "",
-    level: "",
-    tags: {
-      fun_social: false,
-      training_for_competitions: false,
-      fitness: false,
-      learning_tennis: false,
-    },
-  })
-  const [errorMessage, setErrorMessage] = useState("")
+  // const { isLoggedIn } = useAuth()
+  // const [isCreateResourceModalOpen, setCreateResourceModalOpen] = useState(false)
+  // const [isLoginAlertModalOpen, setLoginAlertModalOpen] = useState(false)
+  // const [resourceData, setResourceData] = useState<ResourceData>({
+  //   title: "",
+  //   description: "",
+  //   level: "",
+  //   tags: {
+  //     fun_social: false,
+  //     training_for_competitions: false,
+  //     fitness: false,
+  //     learning_tennis: false,
+  //   },
+  // })
+  // const [errorMessage, setErrorMessage] = useState("")
 
-  const handleCreateResource = () => {
-    if (!isLoggedIn) {
-      setLoginAlertModalOpen(true)
-      return
-    }
-    setCreateResourceModalOpen(true)
-  }
+  // const handleCreateResource = () => {
+  //   if (!isLoggedIn) {
+  //     setLoginAlertModalOpen(true)
+  //     return
+  //   }
+  //   setCreateResourceModalOpen(true)
+  // }
 
-  const closeCreateResourceModal = () => {
-    setCreateResourceModalOpen(false)
-    setErrorMessage("")
-  }
+  // const closeCreateResourceModal = () => {
+  //   setCreateResourceModalOpen(false)
+  //   setErrorMessage("")
+  // }
 
-  const closeLoginAlertModal = () => {
-    setLoginAlertModalOpen(false)
-  }
+  // const closeLoginAlertModal = () => {
+  //   setLoginAlertModalOpen(false)
+  // }
 
-  const handleCancel = () => {
-    resetResourceData()
-    closeCreateResourceModal()
-  }
+  // const handleCancel = () => {
+  //   resetResourceData()
+  //   closeCreateResourceModal()
+  // }
 
-  const resetResourceData = () => {
-    setResourceData({
-      title: "",
-      description: "",
-      level: "",
-      tags: {
-        fun_social: false,
-        training_for_competitions: false,
-        fitness: false,
-        learning_tennis: false,
-      },
-    })
-  }
+  // const resetResourceData = () => {
+  //   setResourceData({
+  //     title: "",
+  //     description: "",
+  //     level: "",
+  //     tags: {
+  //       fun_social: false,
+  //       training_for_competitions: false,
+  //       fitness: false,
+  //       learning_tennis: false,
+  //     },
+  //   })
+  // }
 
-  const handleTagToggle = (tag: string) => {
-    setResourceData((prevState) => ({
-      ...prevState,
-      tags: {
-        ...prevState.tags,
-        [tag]: !prevState.tags[tag],
-      },
-    }))
-  }
+  // const handleTagToggle = (tag: string) => {
+  //   setResourceData((prevState) => ({
+  //     ...prevState,
+  //     tags: {
+  //       ...prevState.tags,
+  //       [tag]: !prevState.tags[tag],
+  //     },
+  //   }))
+  // }
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setResourceData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }))
-  }
+  // const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  //   const { name, value } = e.target
+  //   setResourceData((prevState) => ({
+  //     ...prevState,
+  //     [name]: value,
+  //   }))
+  // }
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  // const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault()
 
-    // Check if all fields are filled out
-    if (!resourceData.title || !resourceData.description || !resourceData.level) {
-      setErrorMessage("All fields must be filled out.")
-      return
-    }
+  //   // Check if all fields are filled out
+  //   if (!resourceData.title || !resourceData.description || !resourceData.level) {
+  //     setErrorMessage("All fields must be filled out.")
+  //     return
+  //   }
 
-    // Check if at least one tag is selected
-    const isTagSelected = Object.values(resourceData.tags).some((tag) => tag)
-    if (!isTagSelected) {
-      setErrorMessage("At least one tag must be selected.")
-      return
-    }
+  //   // Check if at least one tag is selected
+  //   const isTagSelected = Object.values(resourceData.tags).some((tag) => tag)
+  //   if (!isTagSelected) {
+  //     setErrorMessage("At least one tag must be selected.")
+  //     return
+  //   }
 
-    const token = localStorage.getItem("token")
-    if (!token) {
-      setErrorMessage("User not authenticated.")
-      return
-    }
+  //   const token = localStorage.getItem("token")
+  //   if (!token) {
+  //     setErrorMessage("User not authenticated.")
+  //     return
+  //   }
 
-    try {
-      const decodedToken = jwtDecode<{ userId: string }>(token)
-      const userId = decodedToken.userId
-      const response = await axios.post(`http://localhost:5001/api/resource/${userId}/create-resource`, resourceData, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      console.log("Resource created:", response.data)
-      resetResourceData()
-      closeCreateResourceModal()
-      window.location.reload() // Reload the page after submission
-    } catch (error) {
-      console.error("Error creating resource:", error)
-      setErrorMessage("Error creating resource. Please try again.")
-    }
-  }
+  //   try {
+  //     const decodedToken = jwtDecode<{ userId: string }>(token)
+  //     const userId = decodedToken.userId
+  //     const response = await axios.post(`http://localhost:5001/api/resource/${userId}/create-resource`, resourceData, {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     })
+  //     console.log("Resource created:", response.data)
+  //     // resetResourceData()
+  //     // closeCreateResourceModal()
+  //     window.location.reload() // Reload the page after submission
+  //   } catch (error) {
+  //     console.error("Error creating resource:", error)
+  //     setErrorMessage("Error creating resource. Please try again.")
+  //   }
+  // }
 
-  const formatTagLabel = (label: string) => {
-    return label
-      .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ")
-  }
+  // const formatTagLabel = (label: string) => {
+  //   return label
+  //     .split("_")
+  //     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+  //     .join(" ")
+  // }
 
   return (
     <FullPageContainer>
@@ -198,7 +198,7 @@ const HomePage: React.FC = () => {
                         Step 2: Complete Your Profile
                       </h3>
                       <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                        Look for the yellow banner at the top of the page! If it's not there, you have already completed this step.
+                        Look for the yellow banner at the top of the page! If it&apos;s not there, you have already completed this step.
                       </p>
                     </div>
                   </div>
@@ -312,7 +312,7 @@ const HomePage: React.FC = () => {
               <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-lg p-4">
                 <div className="flex items-center mb-3">
                   <Info size={18} className="text-blue-400 mr-2" />
-                  <h2 className="text-lg font-semibold text-white">This Week's Top Users</h2>
+                  <h2 className="text-lg font-semibold text-white">This Week&apos;s Top Users</h2>
                 </div>
                 <div className="flex flex-col items-center justify-center h-[calc(100%-60px)]">
                   <div className="text-center p-4">
@@ -333,7 +333,7 @@ const HomePage: React.FC = () => {
                 <div className="flex flex-col items-center justify-center h-[calc(100%-60px)]">
                   <div className="text-center p-8">
                     <h3 className="text-xl font-semibold text-white mb-2">Stay tuned, coming soon!</h3>
-                    <p className="text-gray-300">We're working on bringing you the best tennis resources.</p>
+                    <p className="text-gray-300">We&apos;re working on bringing you the best tennis resources.</p>
                   </div>
                 </div>
               </div>
@@ -341,8 +341,8 @@ const HomePage: React.FC = () => {
           </div>
         </div>
 
-        {/* Create Resource Modal */}
-        <Modal isOpen={isCreateResourceModalOpen} onClose={closeCreateResourceModal} title="Create Resource">
+        {/* Create Resource Modal - UNDER DEVELOPMENT */}
+        {/* <Modal isOpen={isCreateResourceModalOpen} onClose={closeCreateResourceModal} title="Create Resource">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">Resource Name:</label>
@@ -430,10 +430,10 @@ const HomePage: React.FC = () => {
               </button>
             </div>
           </form>
-        </Modal>
+        </Modal> */}
 
-        {/* Login Alert Modal */}
-        <SmallModal isOpen={isLoginAlertModalOpen} onClose={closeLoginAlertModal}>
+        {/* Login Alert Modal - UNDER DEVELOPMENT */}
+        {/* <SmallModal isOpen={isLoginAlertModalOpen} onClose={closeLoginAlertModal}>
           <div className="text-center p-4">
             <p className="mb-4">Only Pando members can perform this action.</p>
             <div className="flex justify-center space-x-4">
@@ -451,7 +451,7 @@ const HomePage: React.FC = () => {
               </a>
             </div>
           </div>
-        </SmallModal>
+        </SmallModal> */}
       </motion.div>
     </FullPageContainer>
   )

@@ -13,6 +13,7 @@ import UserOutboundProfileModal from "./UserOutboundProfileModal" // Import the 
 
 interface UserOutboundProfileOverviewProps {
   user: {
+    userId: string
     name: string
     profilePhoto: string
     media: string[]
@@ -26,8 +27,8 @@ interface UserOutboundProfileOverviewProps {
       training_for_competitions?: boolean
       fitness?: boolean
       learning_tennis?: boolean
+      userId: string
     }
-    [key: string]: any
   }
   userId: string
   handleOutgoingRequest: (senderId: string, receiverId: string, newStatus: string) => void
@@ -46,8 +47,8 @@ const UserOutboundProfileOverview: React.FC<UserOutboundProfileOverviewProps> = 
 
   const activePreferences = user.userPreferences
     ? Object.entries(user.userPreferences)
-        .filter(([_, value]) => value)
-        .map(([key, _]) => getPreferenceLabel(key))
+        .filter(([value]) => value)
+        .map(([key]) => getPreferenceLabel(key))
     : []
 
   const getCompatibilityColor = (value: number): string => {
@@ -209,7 +210,6 @@ const UserOutboundProfileOverview: React.FC<UserOutboundProfileOverviewProps> = 
                   size="icon"
                   onClick={(e) => {
                     e.stopPropagation()
-                    console.log("UserOutboundProfileOverview - Passing user.id as receiverId:", user.id) // Debug log
                     handleOutgoingRequest(userId, user.userId, "pending")
                   }}
                   className="rounded-full border-green-200 text-green-600 hover:bg-green-50 hover:text-green-700"
@@ -228,7 +228,6 @@ const UserOutboundProfileOverview: React.FC<UserOutboundProfileOverviewProps> = 
                   size="icon"
                   onClick={(e) => {
                     e.stopPropagation()
-                    console.log("UserOutboundProfileOverview - Passing user.id as receiverId:", user.id) // Debug log
                     handleOutgoingRequest(userId, user.userId, "not-sent")
                   }}
                   className="rounded-full border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"

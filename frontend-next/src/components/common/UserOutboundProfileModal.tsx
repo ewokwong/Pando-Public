@@ -25,7 +25,6 @@ interface UserOutboundProfileModalProps {
       fitness?: boolean
       learning_tennis?: boolean
     }
-    [key: string]: any
   }
   compatibility: number
 }

@@ -19,7 +19,6 @@ interface Resource {
   created_by: string
   upvoted_by: string[]
   downvoted_by: string[]
-  [key: string]: any
 }
 
 // Define the props for the ResourceBox component

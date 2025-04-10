@@ -4,7 +4,6 @@ import React, { ReactNode } from 'react';
 
 interface AuthPageContainerProps {
     children: ReactNode;
-    [key: string]: any;
 }
 
 const AuthPageContainer: React.FC<AuthPageContainerProps> = ({ children, ...props }) => {
