@@ -105,7 +105,7 @@ const SearchPage = () => {
 
       // If request is sent, send an email to the receiver
       if (newStatus === "pending") {
-        await axios.post("http://localhost:5001/api/email/connection-invite", {
+        axios.post("http://localhost:5001/api/email/connection-invite", {
           receiverEmail: receiver.email,
           requesterName: sender.name,
           requesterPhoto: sender.profilePhoto || DEFAULT_PROFILE_PHOTO,

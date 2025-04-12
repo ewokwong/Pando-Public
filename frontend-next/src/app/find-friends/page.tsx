@@ -139,7 +139,7 @@ const FindFriendsPage = () => {
       const chatId = chatResponse.data.chatId;
   
       // Send connection accepted email
-      await axios.post("http://localhost:5001/api/email/connection-accepted", {
+      axios.post("http://localhost:5001/api/email/connection-accepted", {
         receiverEmail: sender.email, // Email of the sender (who sent the request)
         acceptorName: receiver.name, // Name of the receiver (who accepted the request)
         acceptorPhoto: receiver.profilePhoto || DEFAULT_PROFILE_PHOTO, // Receiver's profile photo
