@@ -375,36 +375,45 @@ const EditProfilePage = () => {
     }
   }
 
+  // Saving Location Function
   const handleLocationSave = async () => {
     if (!user || !selectedCity) return;
-
+  
     const token = localStorage.getItem("token");
     if (!token) return;
-
+  
     try {
       setErrorMessage("");
+      const locationPayload = {
+        displayName: selectedCity.label, // Use `label` for human-readable name
+        latitude: selectedCity.city.latitude, // Latitude coordinate
+        longitude: selectedCity.city.longitude, // Longitude coordinate
+      };
+  
+      console.log("Sending Location Payload:", locationPayload); // Debugging log
+  
       const response = await axios.put(
         `http://localhost:5001/api/user/${user.userId}/update-location`,
-        getLocationPayload(selectedCity), // Use the extracted function
+        locationPayload, // Send location directly (not wrapped in `{ location: ... }`)
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
-
+  
       setUser((prevUser: any) => ({
         ...prevUser,
-        location: selectedCity.value,
+        location: locationPayload, // Update the user state with the new location dictionary
       }));
-
+  
       setIsEditingLocation(false);
       setSuccessMessage("Location updated successfully!");
     } catch (error) {
       console.error("Error updating location:", error);
       setErrorMessage("Failed to update location. Please try again.");
     }
-  }
+  };
 
   // Preferences functions
   const handlePreferenceToggle = (key: string) => {
@@ -518,6 +527,9 @@ const EditProfilePage = () => {
 
   // Determine which profile photo URL to display
   const displayProfilePhotoUrl = newProfilePhotoUrl || user?.profilePhoto || DEFAULT_PROFILE_PHOTO
+
+  // Update location display logic
+  const displayLocation = user?.location?.displayName || "No location set"
 
   return (
     <TooltipProvider>
@@ -641,12 +653,14 @@ const EditProfilePage = () => {
                       {age} years
                     </span>
                   )}
-                  {user?.location && (
-                    <span className="flex items-center">
-                      <MapPin size={14} className="mr-1" />
-                      {user.location}
-                    </span>
-                  )}
+                    {user?.location?.displayName ? (
+                      <span className="flex items-center">
+                        <MapPin size={14} className="mr-1" />
+                        {user.location.displayName}
+                      </span>
+                    ) : (
+                      <span className="text-gray-400 italic">No location set</span>
+                    )}
                 </div>
               </div>
             </div>
@@ -816,7 +830,7 @@ const EditProfilePage = () => {
                       ) : (
                         <div className="bg-gray-50 p-4 rounded-lg flex items-center">
                           <MapPin size={20} className="text-blue-600 mr-2" />
-                          <span className="text-gray-700">{user?.location || "No location set"}</span>
+                          <span className="text-gray-700">{displayLocation}</span>
                         </div>
                       )}
                     </div>

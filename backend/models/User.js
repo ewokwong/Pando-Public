@@ -71,9 +71,9 @@ const userSchema = new mongoose.Schema({
 
     // Location of user - look at Location.js file for more details
     location: {
-        type: mongoose.Schema.Types.ObjectId, // Reference to the Location model
-        ref: 'Location', // Name of the Location model
-        required: false, // Make it optional
+        displayName: { type: String, required: false }, // Name of the location
+        latitude: { type: Number, required: false },   // Latitude coordinate
+        longitude: { type: Number, required: false }   // Longitude coordinate
     },
 
     createdAt: {

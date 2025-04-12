@@ -1,7 +1,6 @@
 // BE Code to handle user routes
 const express = require('express');
 const User = require('../models/User');
-const Location = require('../models/Location'); // Import Location model
 const jwt = require('jsonwebtoken'); // Import jsonwebtoken
 const SECRET_KEY = process.env.SECRET_KEY; // Ensure SECRET_KEY is loaded from environment variables
 
@@ -692,20 +691,17 @@ router.put('/:userId/update-location', async (req, res) => {
     const { userId } = req.params;
     const { displayName, latitude, longitude } = req.body;
 
-    try {
-        // Step 1: Find or create the location
-        let location = await Location.findOne({ displayName, latitude, longitude });
+    console.log("Request Body:", req.body); // Debugging log
 
-        if (!location) {
-            location = new Location({ displayName, latitude, longitude });
-            await location.save();
+    try {
+        if (!displayName || latitude === undefined || longitude === undefined) {
+            return res.status(400).json({ message: 'Invalid location data' });
         }
 
-        // Step 2: Update the user's location field
         const user = await User.findByIdAndUpdate(
             userId,
-            { location: location._id }, // Reference the Location object
-            { new: true } // Return the updated user document
+            { location: { displayName, latitude, longitude } },
+            { new: true }
         );
 
         if (!user) {
