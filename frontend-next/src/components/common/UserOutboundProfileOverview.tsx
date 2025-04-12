@@ -18,7 +18,9 @@ interface UserOutboundProfileOverviewProps {
     media: string[]
     dob?: string
     UTR?: string
-    location?: string
+    location?: {
+      displayName: string
+    }
     bio?: string
     compatibility?: number
     userPreferences?: {
@@ -165,7 +167,7 @@ const UserOutboundProfileOverview: React.FC<UserOutboundProfileOverviewProps> = 
                 {/* Location */}
                 <div className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-700 rounded-md text-xs">
                   <MapPin size={12} className="mr-1" />
-                  {user.location || "No location set"}
+                  {user.location?.displayName || "No location set"}
                 </div>
               </motion.div>
 
@@ -258,7 +260,12 @@ const UserOutboundProfileOverview: React.FC<UserOutboundProfileOverviewProps> = 
       </motion.div>
 
       {/* Use the extracted modal component */}
-      <UserOutboundProfileModal open={open} onClose={() => setOpen(false)} user={user} compatibility={compatibility} />
+      <UserOutboundProfileModal
+        open={open}
+        onClose={() => setOpen(false)}
+        user={{ ...user}}
+        compatibility={compatibility}
+      />
     </TooltipProvider>
   )
 }

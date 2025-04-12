@@ -17,7 +17,9 @@ interface UserOutboundProfileModalProps {
     media: string[]
     dob?: string
     UTR?: string
-    location?: string
+    location?: {
+      displayName: string
+    }
     bio?: string
     userPreferences?: {
       fun_social?: boolean
@@ -111,7 +113,7 @@ const UserOutboundProfileModal: React.FC<UserOutboundProfileModalProps> = ({ ope
                 )}
                 <div className="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 rounded-md text-sm">
                   <MapPin size={14} className="mr-2" />
-                  {user.location || "No location set"}
+                  {user.location?.displayName || "No location set"}
                 </div>
               </div>
 

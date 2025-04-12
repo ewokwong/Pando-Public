@@ -18,7 +18,9 @@ interface UserProfileOverviewProps {
     media: string[]
     dob?: string
     UTR?: string
-    location?: string
+    location?: {
+      displayName: string
+    }
     bio?: string
     compatibility?: number
     userPreferences?: {
@@ -165,7 +167,7 @@ const UserProfileOverview: React.FC<UserProfileOverviewProps> = ({
                 {/* Location */}
                 <div className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-700 rounded-md text-xs">
                   <MapPin size={12} className="mr-1" />
-                  {user.location || "No location set"}
+                  {user.location?.displayName || "No location set"}
                 </div>
               </motion.div>
 
