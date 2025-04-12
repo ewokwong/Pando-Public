@@ -36,3 +36,4 @@ coverage/
 # Miscellaneous
 *.env.local
 *.env.*.local
+.vercel
