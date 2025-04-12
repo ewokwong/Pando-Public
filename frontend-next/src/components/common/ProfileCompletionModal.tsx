@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog } from "@mui/material"
 import Select from "react-select"
+import { getLocationPayload, formatCityOption } from "@/utils/locationUtils"
 
 interface ProfileCompletionModalProps {
   open: boolean
@@ -159,31 +160,27 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({ open, o
     setError("");
 
     try {
-        const token = localStorage.getItem("token");
-        await axios.put(
-            `http://localhost:5001/api/user/${userId}/update-location`,
-            {
-                displayName: selectedCity.value, // Human-readable name
-                latitude: selectedCity.city.latitude, // Latitude coordinate
-                longitude: selectedCity.city.longitude, // Longitude coordinate
-            },
-            { headers: { Authorization: `Bearer ${token}` } }
-        );
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `http://localhost:5001/api/user/${userId}/update-location`,
+        getLocationPayload(selectedCity), // Use the extracted function
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-        setLocationCompleted(true);
-        setSuccess("Location saved successfully!");
+      setLocationCompleted(true);
+      setSuccess("Location saved successfully!");
 
-        // Check if all sections are complete after this one is saved
-        if (utrCompleted) {
-            setActiveTab("summary");
-        } else {
-            setActiveTab("utr");
-        }
+      // Check if all sections are complete after this one is saved
+      if (utrCompleted) {
+        setActiveTab("summary");
+      } else {
+        setActiveTab("utr");
+      }
     } catch (err) {
-        console.error("Error saving location:", err);
-        setError("Failed to save location. Please try again.");
+      console.error("Error saving location:", err);
+      setError("Failed to save location. Please try again.");
     } finally {
-        setSaving(false);
+      setSaving(false);
     }
   };
 
@@ -211,25 +208,9 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({ open, o
       const response = await axios.request(options)
 
       if (response.data && response.data.data) {
-        const cities: City[] = response.data.data.map((city: any) => ({
-          id: city.id,
-          name: city.name,
-          country: city.country,
-          countryCode: city.countryCode,
-          region: city.region,
-          regionCode: city.regionCode,
-          latitude: city.latitude,
-          longitude: city.longitude,
-        }))
-
-        const formattedOptions: CityOption[] = cities.map((city) => ({
-          value: `${city.name}, ${city.country}`,
-          label: `${city.name}${city.region ? `, ${city.region}` : ""}, ${city.country}`,
-          city: city,
-        }))
-
-        setCityOptions(formattedOptions)
-        return formattedOptions
+        const cities = response.data.data.map(formatCityOption); // Use utility function
+        setCityOptions(cities)
+        return cities
       }
       return []
     } catch (error) {

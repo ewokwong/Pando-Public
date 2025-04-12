@@ -29,6 +29,7 @@ import { DEFAULT_PROFILE_PHOTO } from "@/constants/defaults"
 import { Dialog } from "@mui/material"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import Select from "react-select"
+import { formatCityOption, getLocationPayload } from "@/utils/locationUtils"
 
 const GEO_DB_API_KEY = process.env.NEXT_PUBLIC_GEO_DB_API_KEY
 const GEO_DB_API_HOST = process.env.NEXT_PUBLIC_GEO_DB_API_HOST
@@ -350,11 +351,7 @@ const EditProfilePage = () => {
       const response = await axios.request(options)
 
       if (response.data && response.data.data) {
-        const cities = response.data.data.map((city: any) => ({
-          value: `${city.name}, ${city.country}`,
-          label: `${city.name}${city.region ? `, ${city.region}` : ""}, ${city.country}`,
-        }))
-
+        const cities = response.data.data.map(formatCityOption); // Use utility function
         setCityOptions(cities)
         return cities
       }
@@ -388,11 +385,7 @@ const EditProfilePage = () => {
       setErrorMessage("");
       const response = await axios.put(
         `http://localhost:5001/api/user/${user.userId}/update-location`,
-        {
-          displayName: selectedCity.value, // Human-readable name
-          latitude: selectedCity.city.latitude, // Latitude coordinate
-          longitude: selectedCity.city.longitude, // Longitude coordinate
-        },
+        getLocationPayload(selectedCity), // Use the extracted function
         {
           headers: {
             Authorization: `Bearer ${token}`,
