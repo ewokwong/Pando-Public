@@ -8,12 +8,33 @@ import { X, Check, AlertCircle, Award, ExternalLink, MapPin } from "lucide-react
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog } from "@mui/material"
+import Select from "react-select"
 
 interface ProfileCompletionModalProps {
   open: boolean
   onClose: () => void
   userId?: string
 }
+
+interface City {
+  id: number
+  name: string
+  country: string
+  countryCode: string
+  region?: string
+  regionCode?: string
+  latitude?: number
+  longitude?: number
+}
+
+interface CityOption {
+  value: string
+  label: string
+  city: City
+}
+
+const GEO_DB_API_KEY = process.env.NEXT_PUBLIC_GEO_DB_API_KEY
+const GEO_DB_API_HOST = process.env.NEXT_PUBLIC_GEO_DB_API_HOST
 
 const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({ open, onClose, userId: propUserId }) => {
   // State
@@ -26,6 +47,9 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({ open, o
   const [success, setSuccess] = useState("")
   const [utrAcknowledged, setUtrAcknowledged] = useState(false)
   const [location, setLocation] = useState("")
+  const [cityOptions, setCityOptions] = useState<CityOption[]>([])
+  const [isLoadingCities, setIsLoadingCities] = useState(false)
+  const [selectedCity, setSelectedCity] = useState<CityOption | null>(null)
 
   // Completion status
   const [utrCompleted, setUtrCompleted] = useState(false)
@@ -159,6 +183,70 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({ open, o
     }
   }
 
+  // Load city options for React Select
+  const loadCityOptions = async (inputValue: string) => {
+    if (inputValue.length < 3) return []
+
+    setIsLoadingCities(true)
+
+    try {
+      const options = {
+        method: "GET",
+        url: `https://${GEO_DB_API_HOST}/v1/geo/cities`,
+        params: {
+          namePrefix: inputValue,
+          limit: "10",
+          sort: "-population",
+        },
+        headers: {
+          "X-RapidAPI-Key": GEO_DB_API_KEY,
+          "X-RapidAPI-Host": GEO_DB_API_HOST,
+        },
+      }
+
+      const response = await axios.request(options)
+
+      if (response.data && response.data.data) {
+        const cities: City[] = response.data.data.map((city: any) => ({
+          id: city.id,
+          name: city.name,
+          country: city.country,
+          countryCode: city.countryCode,
+          region: city.region,
+          regionCode: city.regionCode,
+          latitude: city.latitude,
+          longitude: city.longitude,
+        }))
+
+        const formattedOptions: CityOption[] = cities.map((city) => ({
+          value: `${city.name}, ${city.country}`,
+          label: `${city.name}${city.region ? `, ${city.region}` : ""}, ${city.country}`,
+          city: city,
+        }))
+
+        setCityOptions(formattedOptions)
+        return formattedOptions
+      }
+      return []
+    } catch (error) {
+      console.error("Error searching for cities:", error)
+      return []
+    } finally {
+      setIsLoadingCities(false)
+    }
+  }
+
+  // Handle city selection
+  const handleCitySelect = (option: CityOption | null) => {
+    if (option) {
+      setSelectedCity(option)
+      setLocation(option.value)
+    } else {
+      setSelectedCity(null)
+      setLocation("")
+    }
+  }
+
   // Check if profile is complete
   const isProfileComplete = utrCompleted && locationCompleted
 
@@ -195,6 +283,34 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({ open, o
   }, [utrCompleted, locationCompleted])
 
   if (!open) return null
+
+  // Custom styles for React Select
+  const customStyles = {
+    control: (provided: any) => ({
+      ...provided,
+      padding: "0.5rem",
+      paddingLeft: "2.5rem",
+      borderColor: "#e5e7eb",
+      boxShadow: "none",
+      "&:hover": {
+        borderColor: "#d1d5db",
+      },
+    }),
+    option: (provided: any, state: any) => ({
+      ...provided,
+      backgroundColor: state.isSelected ? "#4f46e5" : state.isFocused ? "#f3f4f6" : null,
+      color: state.isSelected ? "white" : "#374151",
+      padding: "10px 12px",
+    }),
+    menu: (provided: any) => ({
+      ...provided,
+      zIndex: 9999,
+    }),
+    menuPortal: (provided: any) => ({
+      ...provided,
+      zIndex: 9999,
+    }),
+  }
 
   return (
     <Dialog
@@ -277,117 +393,166 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({ open, o
 
               {/* UTR Level Tab */}
               <TabsContent value="utr" className="mt-0">
-                <div className="flex flex-col">
-                  <div className="mb-6 bg-gray-50 rounded-lg p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">Your UTR Level</h3>
-                    <p className="text-gray-600 mb-4 text-center">
-                      Please fill out the form to submit your UTR level. This helps us match you with players of similar
-                      skill.
-                    </p>
-                    <div className="flex justify-center mb-4">
-                      <a
-                        href="https://forms.gle/qYkeESNqfkK61w847"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center text-brand-500 hover:text-brand-600 font-medium"
-                      >
-                        Fill out the UTR form
-                        <ExternalLink size={14} className="ml-1" />
-                      </a>
-                    </div>
-                    <div className="flex items-center mt-4 bg-yellow-50 p-3 rounded-lg">
-                      <input
-                        type="checkbox"
-                        id="utrAcknowledge"
-                        checked={utrAcknowledged}
-                        onChange={() => setUtrAcknowledged(!utrAcknowledged)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            e.preventDefault()
-                            if (utrAcknowledged) {
-                              saveUtrAcknowledgment()
+                {utrCompleted ? (
+                  <div className="flex flex-col items-center text-center">
+                    <Check size={40} className="text-green-600 mb-4" />
+                    <h3 className="text-xl font-bold text-gray-900">UTR Level Completed</h3>
+                    <p className="text-gray-600">You have acknowledged your UTR level.</p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col">
+                    <div className="mb-6 bg-gray-50 rounded-lg p-6">
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">Your UTR Level</h3>
+                      <p className="text-gray-600 mb-4 text-center">
+                        Please fill out the form to submit your UTR level. This helps us match you with players of similar skill.
+                      </p>
+                      <div className="flex justify-center mb-4">
+                        <a
+                          href="https://forms.gle/qYkeESNqfkK61w847"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center text-brand-500 hover:text-brand-600 font-medium"
+                        >
+                          Fill out the UTR form
+                          <ExternalLink size={14} className="ml-1" />
+                        </a>
+                      </div>
+                      <div className="flex items-center mt-4 bg-yellow-50 p-3 rounded-lg">
+                        <input
+                          type="checkbox"
+                          id="utrAcknowledge"
+                          checked={utrAcknowledged}
+                          onChange={() => setUtrAcknowledged(!utrAcknowledged)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault()
+                              if (utrAcknowledged) {
+                                saveUtrAcknowledgment()
+                              }
                             }
-                          }
+                          }}
+                          className="h-4 w-4 text-brand-500 focus:ring-brand-500 border-gray-300 rounded"
+                        />
+                        <label htmlFor="utrAcknowledge" className="ml-2 block text-sm text-gray-700">
+                          I acknowledge that I have submitted the form
+                        </label>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-4 justify-between w-full">
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setActiveTab("location")
                         }}
-                        className="h-4 w-4 text-brand-500 focus:ring-brand-500 border-gray-300 rounded"
-                      />
-                      <label htmlFor="utrAcknowledge" className="ml-2 block text-sm text-gray-700">
-                        I acknowledge that I have submitted the form
-                      </label>
+                        className="px-6"
+                      >
+                        Skip for now
+                      </Button>
+
+                      <Button
+                        onClick={saveUtrAcknowledgment}
+                        disabled={!utrAcknowledged || saving}
+                        className="bg-green-500 hover:bg-green-600 text-white px-6 font-medium"
+                      >
+                        {saving ? "Saving..." : "Confirm"}
+                      </Button>
                     </div>
                   </div>
-
-                  <div className="flex gap-4 justify-between w-full">
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setActiveTab("location")
-                      }}
-                      className="px-6"
-                    >
-                      Skip for now
-                    </Button>
-
-                    <Button
-                      onClick={saveUtrAcknowledgment}
-                      disabled={!utrAcknowledged || saving}
-                      className="bg-green-500 hover:bg-green-600 text-white px-6 font-medium"
-                    >
-                      {saving ? "Saving..." : "Confirm"}
-                    </Button>
-                  </div>
-                </div>
+                )}
               </TabsContent>
 
               {/* Location Tab */}
               <TabsContent value="location" className="mt-0">
-                <div className="flex flex-col">
-                  <div className="mb-6 text-center">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">Where Are You Located?</h3>
-                    <p className="text-gray-600">Your location helps us connect you with nearby players</p>
+                {locationCompleted ? (
+                  <div className="flex flex-col items-center text-center">
+                    <Check size={40} className="text-green-600 mb-4" />
+                    <h3 className="text-xl font-bold text-gray-900">Location Completed</h3>
+                    <p className="text-gray-600">Your location has been saved successfully.</p>
                   </div>
+                ) : (
+                  <div className="flex flex-col">
+                    <div className="mb-6 text-center">
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">Where Are You Located?</h3>
+                      <p className="text-gray-600">Your location helps us connect you with nearby players</p>
+                    </div>
 
-                  <div className="mb-6">
-                    <div className="relative">
-                      <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                      <input
-                        type="text"
-                        value={location}
-                        onChange={(e) => setLocation(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            e.preventDefault()
-                            if (location.trim()) {
-                              saveLocation()
+                    <div className="mb-6">
+                      <div className="relative">
+                        <MapPin
+                          className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 z-10"
+                          size={20}
+                        />
+                        <Select
+                          styles={{
+                            ...customStyles,
+                            menuPortal: (base) => ({
+                              ...base,
+                              zIndex: 9999,
+                            }),
+                          }}
+                          className="w-full"
+                          classNamePrefix="react-select"
+                          placeholder="Search for your city..."
+                          isClearable
+                          isSearchable
+                          isLoading={isLoadingCities}
+                          options={cityOptions}
+                          value={selectedCity}
+                          onChange={(option) => handleCitySelect(option as CityOption | null)}
+                          onInputChange={(newValue) => {
+                            if (newValue.length >= 3) {
+                              loadCityOptions(newValue)
                             }
+                          }}
+                          filterOption={() => true} // Disable client-side filtering
+                          noOptionsMessage={({ inputValue }) =>
+                            inputValue.length < 3
+                              ? "Type at least 3 characters to search"
+                              : isLoadingCities
+                              ? "Loading..."
+                              : "No cities found"
                           }
+                          menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                          menuPlacement="auto"
+                          maxMenuHeight={200}
+                          formatOptionLabel={(option: CityOption) => (
+                            <div className="flex items-start">
+                              <MapPin size={16} className="text-gray-400 mr-2 mt-0.5 flex-shrink-0" />
+                              <div>
+                                <div className="font-medium">{option.city.name}</div>
+                                <div className="text-xs text-gray-500">
+                                  {option.city.region ? `${option.city.region}, ` : ""}
+                                  {option.city.country}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex gap-4 justify-between w-full">
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setActiveTab("utr")
                         }}
-                        placeholder="Enter your city"
-                        className="w-full p-4 pl-12 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all"
-                      />
+                        className="px-6"
+                      >
+                        Skip for now
+                      </Button>
+
+                      <Button
+                        onClick={saveLocation}
+                        disabled={!location.trim() || saving}
+                        className="bg-green-500 hover:bg-green-600 text-white px-6 font-medium"
+                      >
+                        {saving ? "Saving..." : "Save Location"}
+                      </Button>
                     </div>
                   </div>
-
-                  <div className="flex gap-4 justify-between w-full">
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setActiveTab("utr")
-                      }}
-                      className="px-6"
-                    >
-                      Skip for now
-                    </Button>
-
-                    <Button
-                      onClick={saveLocation}
-                      disabled={!location.trim() || saving}
-                      className="bg-green-500 hover:bg-green-600 text-white px-6 font-medium"
-                    >
-                      {saving ? "Saving..." : "Save Location"}
-                    </Button>
-                  </div>
-                </div>
+                )}
               </TabsContent>
 
               {/* Summary Tab */}

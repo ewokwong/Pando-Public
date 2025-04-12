@@ -28,6 +28,10 @@ import { calculateAge } from "@/utils/dateUtils"
 import { DEFAULT_PROFILE_PHOTO } from "@/constants/defaults"
 import { Dialog } from "@mui/material"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import Select from "react-select"
+
+const GEO_DB_API_KEY = process.env.NEXT_PUBLIC_GEO_DB_API_KEY
+const GEO_DB_API_HOST = process.env.NEXT_PUBLIC_GEO_DB_API_HOST
 
 const EditProfilePage = () => {
   // User data state
@@ -57,6 +61,10 @@ const EditProfilePage = () => {
   const [hoveredDelete, setHoveredDelete] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState("")
   const [errorMessage, setErrorMessage] = useState("")
+
+  const [cityOptions, setCityOptions] = useState<any[]>([])
+  const [isLoadingCities, setIsLoadingCities] = useState(false)
+  const [selectedCity, setSelectedCity] = useState<any | null>(null)
 
   // Fetch user data on component mount
   useEffect(() => {
@@ -316,6 +324,58 @@ const EditProfilePage = () => {
 
   const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewLocation(e.target.value)
+  }
+
+  // Load city options for React Select
+  const loadCityOptions = async (inputValue: string) => {
+    if (inputValue.length < 3) return []
+
+    setIsLoadingCities(true)
+
+    try {
+      const options = {
+        method: "GET",
+        url: `https://${GEO_DB_API_HOST}/v1/geo/cities`,
+        params: {
+          namePrefix: inputValue,
+          limit: "10",
+          sort: "-population",
+        },
+        headers: {
+          "X-RapidAPI-Key": GEO_DB_API_KEY,
+          "X-RapidAPI-Host": GEO_DB_API_HOST,
+        },
+      }
+
+      const response = await axios.request(options)
+
+      if (response.data && response.data.data) {
+        const cities = response.data.data.map((city: any) => ({
+          value: `${city.name}, ${city.country}`,
+          label: `${city.name}${city.region ? `, ${city.region}` : ""}, ${city.country}`,
+        }))
+
+        setCityOptions(cities)
+        return cities
+      }
+      return []
+    } catch (error) {
+      console.error("Error searching for cities:", error)
+      return []
+    } finally {
+      setIsLoadingCities(false)
+    }
+  }
+
+  // Handle city selection
+  const handleCitySelect = (option: any | null) => {
+    if (option) {
+      setSelectedCity(option)
+      setNewLocation(option.value)
+    } else {
+      setSelectedCity(null)
+      setNewLocation("")
+    }
   }
 
   const handleLocationSave = async () => {
@@ -702,18 +762,48 @@ const EditProfilePage = () => {
                               className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
                               size={18}
                             />
-                            <input
-                              type="text"
-                              value={newLocation}
-                              onChange={handleLocationChange}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                  e.preventDefault()
-                                  handleLocationSave()
+                            <Select
+                              styles={{
+                                control: (provided) => ({
+                                  ...provided,
+                                  padding: "0.5rem",
+                                  paddingLeft: "2.5rem",
+                                  borderColor: "#e5e7eb",
+                                  boxShadow: "none",
+                                  "&:hover": {
+                                    borderColor: "#d1d5db",
+                                  },
+                                }),
+                                menuPortal: (provided) => ({
+                                  ...provided,
+                                  zIndex: 9999,
+                                }),
+                              }}
+                              className="w-full"
+                              classNamePrefix="react-select"
+                              placeholder="Search for your city..."
+                              isClearable
+                              isSearchable
+                              isLoading={isLoadingCities}
+                              options={cityOptions}
+                              value={selectedCity}
+                              onChange={(option) => handleCitySelect(option)}
+                              onInputChange={(newValue) => {
+                                if (newValue.length >= 3) {
+                                  loadCityOptions(newValue)
                                 }
                               }}
-                              className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                              placeholder="Enter your city"
+                              filterOption={() => true} // Disable client-side filtering
+                              noOptionsMessage={({ inputValue }) =>
+                                inputValue.length < 3
+                                  ? "Type at least 3 characters to search"
+                                  : isLoadingCities
+                                  ? "Loading..."
+                                  : "No cities found"
+                              }
+                              menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+                              menuPlacement="auto"
+                              maxMenuHeight={200}
                             />
                           </div>
                           <div className="flex justify-end space-x-2">
