@@ -1,6 +1,6 @@
 import type React from "react"
 import Link from "next/link"
-import { ExternalLink, Mail, Instagram, Heart } from "lucide-react"
+import { ExternalLink, Mail, Instagram } from "lucide-react"
 
 const Footer: React.FC = () => {
   return (
@@ -29,7 +29,7 @@ const Footer: React.FC = () => {
                 className="text-gray-300 hover:text-pink-400 transition-colors"
                 aria-label="Instagram"
               >
-                <div className="bg-gradient-to-tr from-purple-500/20 via-pink-500/20 to-yellow-500/20 p-2 rounded-lg hover:bg-gradient-to-tr hover:from-purple-500/30 hover:via-pink-500/30 hover:to-yellow-500/30 transition-all">
+                <div className="from-purple-500/20 via-pink-500/20 to-yellow-500/20 p-2 rounded-lg hover:bg-gradient-to-tr hover:from-purple-500/30 hover:via-pink-500/30 hover:to-yellow-500/30 transition-all hover:shadow-lg hover:shadow-pink-500/10">
                   <Instagram className="h-5 w-5" />
                 </div>
               </a>
@@ -42,23 +42,36 @@ const Footer: React.FC = () => {
                 className="text-gray-300 hover:text-white transition-colors"
                 aria-label="TikTok"
               >
-                <div className="bg-black/30 p-2 rounded-lg hover:bg-black/40 transition-all">
+                <div className="bg-black/30 p-2 rounded-lg hover:bg-black/40 transition-all hover:shadow-lg hover:shadow-white/10">
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
                     width="20"
                     height="20"
                     viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-5 w-5"
+                    fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
-                    <path d="M9 12a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" />
-                    <path d="M15 8a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
-                    <path d="M15 8v8a4 4 0 0 1-4 4" />
-                    <line x1="15" y1="4" x2="15" y2="12" />
+                    <path d="M19.321 5.562a5.124 5.124 0 0 1-3.414-1.267 5.124 5.124 0 0 1-1.537-3.168h-3.766v13.206c0 1.55-1.257 2.807-2.807 2.807a2.807 2.807 0 0 1-2.807-2.807 2.807 2.807 0 0 1 2.807-2.807c.193 0 .381.019.562.055V7.725a6.641 6.641 0 0 0-.562-.024 6.58 6.58 0 0 0-6.58 6.58A6.58 6.58 0 0 0 7.797 20.86a6.58 6.58 0 0 0 6.58-6.58V9.07a8.726 8.726 0 0 0 4.944 1.525V6.83c-.001 0-.001 0 0 0v-1.27Z" />
+                  </svg>
+                </div>
+              </a>
+
+              {/* X */}
+              <a
+                href="https://x.com/pandotennis"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-300 hover:text-blue-400 transition-colors"
+                aria-label="X"
+              >
+                <div className="p-2 rounded-lg hover:bg-blue-500/30 transition-all hover:shadow-lg hover:shadow-blue-500/10">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                   </svg>
                 </div>
               </a>
@@ -69,7 +82,7 @@ const Footer: React.FC = () => {
                 className="text-gray-300 hover:text-blue-400 transition-colors"
                 aria-label="Email"
               >
-                <div className="bg-blue-500/20 p-2 rounded-lg hover:bg-blue-500/30 transition-all">
+                <div className="p-2 rounded-lg hover:bg-blue-500/30 transition-all hover:shadow-lg hover:shadow-blue-500/10">
                   <Mail className="h-5 w-5" />
                 </div>
               </a>
@@ -164,7 +177,7 @@ const Footer: React.FC = () => {
                   rel="noopener noreferrer"
                   className="text-gray-300 hover:text-pink-400 transition-colors flex items-center"
                 >
-                  <div className="bg-gradient-to-tr from-purple-500/20 via-pink-500/20 to-yellow-500/20 p-1.5 rounded-md mr-2 flex-shrink-0">
+                  <div className="from-purple-500/20 via-pink-500/20 to-yellow-500/20 p-1.5 rounded-md mr-2 flex-shrink-0 group-hover:from-purple-500/30 group-hover:via-pink-500/30 group-hover:to-yellow-500/30 transition-all">
                     <Instagram size={14} />
                   </div>
                   <span className="text-sm">@pando_tennis</span>
@@ -179,25 +192,42 @@ const Footer: React.FC = () => {
                   rel="noopener noreferrer"
                   className="text-gray-300 hover:text-gray-100 transition-colors flex items-center"
                 >
-                  <div className="bg-black/30 p-1.5 rounded-md mr-2 flex-shrink-0">
+                  <div className="bg-black/30 p-1.5 rounded-md mr-2 flex-shrink-0 group-hover:bg-black/40 transition-all">
                     <svg
-                      xmlns="http://www.w3.org/2000/svg"
                       width="14"
                       height="14"
                       viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                      fill="currentColor"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
-                      <path d="M9 12a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" />
-                      <path d="M15 8a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
-                      <path d="M15 8v8a4 4 0 0 1-4 4" />
-                      <line x1="15" y1="4" x2="15" y2="12" />
+                      <path d="M19.321 5.562a5.124 5.124 0 0 1-3.414-1.267 5.124 5.124 0 0 1-1.537-3.168h-3.766v13.206c0 1.55-1.257 2.807-2.807 2.807a2.807 2.807 0 0 1-2.807-2.807 2.807 2.807 0 0 1 2.807-2.807c.193 0 .381.019.562.055V7.725a6.641 6.641 0 0 0-.562-.024 6.58 6.58 0 0 0-6.58 6.58A6.58 6.58 0 0 0 7.797 20.86a6.58 6.58 0 0 0 6.58-6.58V9.07a8.726 8.726 0 0 0 4.944 1.525V6.83c-.001 0-.001 0 0 0v-1.27Z" />
                     </svg>
                   </div>
                   <span className="text-sm">@pando_tennis</span>
+                  <ExternalLink size={10} className="ml-1.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </a>
+              </li>
+
+              {/* X */}
+              <li className="flex items-center group">
+                <a
+                  href="https://x.com/pandotennis"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-300 hover:text-blue-400 transition-colors flex items-center"
+                >
+                  <div className="p-1.5 rounded-md mr-2 flex-shrink-0 group-hover:bg-blue-500/30 transition-all">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                    </svg>
+                  </div>
+                  <span className="text-sm">@pandotennis</span>
                   <ExternalLink size={10} className="ml-1.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </a>
               </li>
@@ -207,7 +237,7 @@ const Footer: React.FC = () => {
                   href="mailto:pandotennis@gmail.com"
                   className="text-gray-300 hover:text-blue-400 transition-colors flex items-center"
                 >
-                  <div className="bg-blue-500/20 p-1.5 rounded-md mr-2 flex-shrink-0">
+                  <div className="p-1.5 rounded-md mr-2 flex-shrink-0 group-hover:bg-blue-500/30 transition-all">
                     <Mail size={14} />
                   </div>
                   <span className="text-sm">pandotennis@gmail.com</span>
@@ -239,4 +269,3 @@ const Footer: React.FC = () => {
 }
 
 export default Footer
-
