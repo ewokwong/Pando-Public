@@ -50,7 +50,7 @@ const MessagesSidebar = ({ userId, currentChatId }: MessagesSidebarProps) => {
     const fetchChats = async () => {
       try {
         setIsLoading(true)
-        const response = await axios.get(`http://localhost:5001/api/chat/get-chats/${userId}`)
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/chat/get-chats/${userId}`)
         console.log("Fetched chats:", response.data.chats)
 
         // Sort chats by latest message timestamp

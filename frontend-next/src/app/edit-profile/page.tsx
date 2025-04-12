@@ -33,6 +33,7 @@ import { formatCityOption, getLocationPayload } from "@/utils/locationUtils"
 
 const GEO_DB_API_KEY = process.env.NEXT_PUBLIC_GEO_DB_API_KEY
 const GEO_DB_API_HOST = process.env.NEXT_PUBLIC_GEO_DB_API_HOST
+const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL
 
 const EditProfilePage = () => {
   // User data state
@@ -87,7 +88,7 @@ const EditProfilePage = () => {
           return
         }
 
-        const response = await axios.get(`http://localhost:5001/api/user/${userId}`, {
+        const response = await axios.get(`${BACKEND_BASE_URL}/user/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         setUser(response.data.user)
@@ -148,7 +149,7 @@ const EditProfilePage = () => {
     if (!token) return
 
     try {
-      const response = await axios.post(`http://localhost:5001/api/cloudinary/${user.userId}/upload-media`, formData, {
+      const response = await axios.post(`${BACKEND_BASE_URL}/cloudinary/${user.userId}/upload-media`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -198,7 +199,7 @@ const EditProfilePage = () => {
     if (!token) return
 
     try {
-      await axios.delete(`http://localhost:5001/api/cloudinary/${user.userId}/delete-media`, {
+      await axios.delete(`${BACKEND_BASE_URL}/cloudinary/${user.userId}/delete-media`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -245,7 +246,7 @@ const EditProfilePage = () => {
       setErrorMessage("")
 
       const response = await axios.post(
-        `http://localhost:5001/api/cloudinary/${user.userId}/upload-profile-photo`,
+        `${BACKEND_BASE_URL}/cloudinary/${user.userId}/upload-profile-photo`,
         formData,
         {
           headers: {
@@ -295,7 +296,7 @@ const EditProfilePage = () => {
     try {
       setErrorMessage("")
       const response = await axios.put(
-        `http://localhost:5001/api/user/${user.userId}/update-bio`,
+        `${BACKEND_BASE_URL}/user/${user.userId}/update-bio`,
         { bio: newBio },
         {
           headers: {
@@ -393,7 +394,7 @@ const EditProfilePage = () => {
       console.log("Sending Location Payload:", locationPayload); // Debugging log
   
       const response = await axios.put(
-        `http://localhost:5001/api/user/${user.userId}/update-location`,
+        `${BACKEND_BASE_URL}/user/${user.userId}/update-location`,
         locationPayload, // Send location directly (not wrapped in `{ location: ... }`)
         {
           headers: {
@@ -435,7 +436,7 @@ const EditProfilePage = () => {
     try {
       setErrorMessage("")
       const response = await axios.put(
-        `http://localhost:5001/api/user/${user.userId}/submit-preferences`,
+        `${BACKEND_BASE_URL}/user/${user.userId}/submit-preferences`,
         { userPreferences: updatedPreferences },
         {
           headers: {

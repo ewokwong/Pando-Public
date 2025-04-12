@@ -66,11 +66,11 @@ const FindFriendsPage = () => {
       setUserID(userId)
 
       axios
-        .get(`http://localhost:5001/api/user/${userId}`, {
+        .get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${userId}`, {
           headers: { Authorization: `Bearer ${userToken}` },
         })
         .then((response) => {
-          return axios.get(`http://localhost:5001/api/user/${userId}/getIncomingRequests?status=pending`, {
+          return axios.get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${userId}/getIncomingRequests?status=pending`, {
             headers: { Authorization: `Bearer ${userToken}` },
           })
         })
@@ -94,7 +94,7 @@ const FindFriendsPage = () => {
 
       const userId = incomingRequests[FRONT_OF_LIST_INDEX].sender
       axios
-        .get(`http://localhost:5001/api/user/${userId}`)
+        .get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${userId}`)
         .then((response) => {
           // Add a small delay for smoother transition
           setTimeout(() => {
@@ -112,34 +112,34 @@ const FindFriendsPage = () => {
   
     try {
       // Fetch sender details
-      const senderResponse = await axios.get(`http://localhost:5001/api/user/${senderId}`);
+      const senderResponse = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${senderId}`);
       const sender = senderResponse.data.user;
   
       // Fetch receiver details
-      const receiverResponse = await axios.get(`http://localhost:5001/api/user/${receiverId}`);
+      const receiverResponse = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${receiverId}`);
       const receiver = receiverResponse.data.user;
   
       // Update the incoming request status to "accepted"
-      await axios.post("http://localhost:5001/api/user/update-incoming-request", {
+      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/update-incoming-request`, {
         requestId,
         status: "accepted",
       });
   
       // Add sender and receiver as friends
-      await axios.post("http://localhost:5001/api/user/add-friend", {
+      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/add-friend`, {
         senderId,
         receiverId,
       });
   
       // Create a chat between the sender and receiver
-      const chatResponse = await axios.post("http://localhost:5001/api/chat/create-chat", {
+      const chatResponse = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/chat/create-chat`, {
         senderId,
         receiverId,
       });
       const chatId = chatResponse.data.chatId;
   
       // Send connection accepted email
-      axios.post("http://localhost:5001/api/email/connection-accepted", {
+      axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/email/connection-accepted`, {
         receiverEmail: sender.email, // Email of the sender (who sent the request)
         acceptorName: receiver.name, // Name of the receiver (who accepted the request)
         acceptorPhoto: receiver.profilePhoto || DEFAULT_PROFILE_PHOTO, // Receiver's profile photo
@@ -163,7 +163,7 @@ const FindFriendsPage = () => {
 
   const handleReject = (requestId: RejectRequestParams["requestId"]) => {
     axios
-      .post("http://localhost:5001/api/user/update-incoming-request", { requestId, status: "rejected" })
+      .post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/update-incoming-request`, { requestId, status: "rejected" })
       .then(() => moveToNextRequest())
       .catch((err: unknown) => {
         console.error("Error rejecting request", err)

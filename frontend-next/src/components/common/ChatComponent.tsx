@@ -66,7 +66,7 @@ const ChatComponent = ({ userId }: { userId: string }) => {
       try {
         setIsLoadingMore(true)
         const response = await axios.get(
-          `http://localhost:5001/api/chat/${chatId}/get-messages?page=${pageNum}&limit=${MESSAGES_PER_PAGE}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/chat/${chatId}/get-messages?page=${pageNum}&limit=${MESSAGES_PER_PAGE}`,
         )
 
         const fetchedMessages = response.data.messages
@@ -109,13 +109,13 @@ const ChatComponent = ({ userId }: { userId: string }) => {
 
     // Fetch other user info
     axios
-      .get(`http://localhost:5001/api/chat/${chatId}/get-users`)
+      .get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/chat/${chatId}/get-users`)
       .then((response) => {
         const userIdList = response.data.users
         const otherUserId = userIdList.find((user: string) => user !== userId)
         if (otherUserId) {
           axios
-            .get(`http://localhost:5001/api/user/${otherUserId}`)
+            .get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${otherUserId}`)
             .then((response) => {
               // Ensure we have the user ID in a consistent format
               const userData = response.data.user
@@ -222,7 +222,7 @@ const ChatComponent = ({ userId }: { userId: string }) => {
     }
 
     axios
-      .post(`http://localhost:5001/api/chat/${chatId}/send-message`, messageData)
+      .post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/chat/${chatId}/send-message`, messageData)
       .then((response) => {
         // Add the message to the local state
         const newMessage = {

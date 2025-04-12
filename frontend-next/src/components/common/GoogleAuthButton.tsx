@@ -29,7 +29,7 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ className }) => {
 
   // To create a new user in the database when they sign in using Google Auth
   const createNewFirebaseUser = async (user: User) => {
-    const apiBaseUrl = 'http://localhost:5001/api/auth'; // Update API base URL
+    const apiBaseUrl = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/auth`; // Update API base URL
     console.log("Adding a firebase user to DB");
     try {
       // Create a new user in the database
@@ -67,7 +67,7 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ className }) => {
       const idToken = await user.getIdToken();
       console.log('Firebase ID Token:', idToken);
 
-      const apiBaseUrl = 'http://localhost:5001/api/user'; // Update API base URL
+      const apiBaseUrl = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user`; // Update API base URL
 
       console.log("User previously signed-in:", user.uid);
 

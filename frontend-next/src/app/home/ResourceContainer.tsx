@@ -31,7 +31,7 @@ const ResourceContainer: React.FC = () => {
             try {
                 setIsLoading(true);
                 setError(null);
-                const response = await axios.get<Resource[]>('http://localhost:5001/api/resource/get-resources');
+                const response = await axios.get<Resource[]>(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/resource/get-resources`);
                 setResources(response.data);
                 setFilteredResources(response.data);
                 setIsLoading(false);

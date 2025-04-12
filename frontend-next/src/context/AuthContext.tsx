@@ -61,7 +61,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 if (decoded.exp * 1000 > Date.now()) {
                     // Fetch user object
                     axios
-                        .get(`http://localhost:5001/api/user/${userId}/get-user-object`, {
+                        .get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${userId}/get-user-object`, {
                             headers: { Authorization: `Bearer ${token}` },
                         })
                         .then((response) => {
@@ -83,7 +83,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Login function
     const login = async (email: string, password: string): Promise<string | void> => {
         try {
-            const response = await axios.post('http://localhost:5001/api/auth/login', {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/auth/login`, {
                 email,
                 password,
             });
@@ -125,7 +125,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         confirmPassword: string
     ): Promise<string | void> => {
         try {
-            const response = await axios.post('http://localhost:5001/api/auth/signup', {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/auth/signup`, {
                 email,
                 name,
                 dob,

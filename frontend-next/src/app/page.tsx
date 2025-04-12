@@ -126,7 +126,7 @@ const HomePage: React.FC = () => {
     try {
       const decodedToken = jwtDecode<{ userId: string }>(token)
       const userId = decodedToken.userId
-      const response = await axios.post(`http://localhost:5001/api/resource/${userId}/create-resource`, resourceData, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/resource/${userId}/create-resource`, resourceData, {
         headers: { Authorization: `Bearer ${token}` },
       })
       console.log("Resource created:", response.data)

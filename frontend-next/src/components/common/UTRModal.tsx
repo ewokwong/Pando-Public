@@ -29,7 +29,7 @@ const FindFriendsModal: React.FC<FindFriendsModalProps> = ({ open, onClose, user
   const handleSubmit = () => {
     // Submit verification request
     axios
-      .post("http://localhost:5001/api/user/verify-user", { userId })
+      .post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/verify-user`, { userId })
       .then((response) => {
         console.log("User verified successfully:", response.data)
       })

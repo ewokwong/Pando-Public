@@ -111,7 +111,7 @@ const ResourceBox: React.FC<ResourceBoxProps> = ({ resource }) => {
   const confirmDelete = async () => {
     try {
       const token = localStorage.getItem("token")
-      await axios.delete(`http://localhost:5001/api/resource/${resource._id}`, {
+      await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/resource/${resource._id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       setIsDeleteModalOpen(false)
@@ -133,7 +133,7 @@ const ResourceBox: React.FC<ResourceBoxProps> = ({ resource }) => {
       const token = localStorage.getItem("token")
       if (userVote === "upvote") {
         await axios.post(
-          `http://localhost:5001/api/resource/${resource._id}/${userId}/remove-vote`,
+          `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/resource/${resource._id}/${userId}/remove-vote`,
           {},
           { headers: { Authorization: `Bearer ${token}` } },
         )
@@ -141,7 +141,7 @@ const ResourceBox: React.FC<ResourceBoxProps> = ({ resource }) => {
         setUserVote(null)
       } else {
         await axios.post(
-          `http://localhost:5001/api/resource/${resource._id}/${userId}/upvote`,
+          `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/resource/${resource._id}/${userId}/upvote`,
           {},
           { headers: { Authorization: `Bearer ${token}` } },
         )
@@ -166,7 +166,7 @@ const ResourceBox: React.FC<ResourceBoxProps> = ({ resource }) => {
       const token = localStorage.getItem("token")
       if (userVote === "downvote") {
         await axios.post(
-          `http://localhost:5001/api/resource/${resource._id}/${userId}/remove-vote`,
+          `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/resource/${resource._id}/${userId}/remove-vote`,
           {},
           { headers: { Authorization: `Bearer ${token}` } },
         )
@@ -174,7 +174,7 @@ const ResourceBox: React.FC<ResourceBoxProps> = ({ resource }) => {
         setUserVote(null)
       } else {
         await axios.post(
-          `http://localhost:5001/api/resource/${resource._id}/${userId}/downvote`,
+          `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/resource/${resource._id}/${userId}/downvote`,
           {},
           { headers: { Authorization: `Bearer ${token}` } },
         )
@@ -222,7 +222,7 @@ const ResourceBox: React.FC<ResourceBoxProps> = ({ resource }) => {
 
     try {
       const token = localStorage.getItem("token")
-      await axios.put(`http://localhost:5001/api/resource/${resource._id}`, editedResource, {
+      await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/resource/${resource._id}`, editedResource, {
         headers: { Authorization: `Bearer ${token}` },
       })
       setIsEditModalOpen(false)

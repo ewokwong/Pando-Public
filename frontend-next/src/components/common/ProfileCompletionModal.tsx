@@ -88,7 +88,7 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({ open, o
 
     try {
       const token = localStorage.getItem("token")
-      const response = await axios.get(`http://localhost:5001/api/user/${userId}`, {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
 
@@ -134,7 +134,7 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({ open, o
     try {
       const token = localStorage.getItem("token")
       await axios.post(
-        `http://localhost:5001/api/user/${userId}/verify-user`,
+        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${userId}/verify-user`,
         { utrAcknowledged: true },
         { headers: { Authorization: `Bearer ${token}` } },
       )
@@ -165,7 +165,7 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({ open, o
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        `http://localhost:5001/api/user/${userId}/update-location`,
+        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${userId}/update-location`,
         getLocationPayload(selectedCity), // Use the extracted function
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -245,7 +245,7 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({ open, o
     try {
       const token = localStorage.getItem("token")
       await axios.put(
-        `http://localhost:5001/api/user/${userId}/mark-profile-complete`,
+        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${userId}/mark-profile-complete`,
         {},
         { headers: { Authorization: `Bearer ${token}` } },
       )

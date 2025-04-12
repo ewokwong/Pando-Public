@@ -37,7 +37,7 @@ const SearchPage = () => {
       setUserId(userId)
 
       axios
-        .get(`http://localhost:5001/api/user/${userId}`, {
+        .get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${userId}`, {
           headers: { Authorization: `Bearer ${userToken}` },
         })
         .then((response) => {
@@ -49,7 +49,7 @@ const SearchPage = () => {
         })
 
       axios
-        .get(`http://localhost:5001/api/user/${userId}/get-possible-connections`, {
+        .get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${userId}/get-possible-connections`, {
           headers: { Authorization: `Bearer ${userToken}` },
         })
         .then((response) => {
@@ -69,7 +69,7 @@ const SearchPage = () => {
       setUserProfile(null) // Reset profile to show loading state
 
       axios
-        .get(`http://localhost:5001/api/user/${userId}`)
+        .get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${userId}`)
         .then((response) => {
           // Add a small delay for smoother transition
           setTimeout(() => {
@@ -87,15 +87,15 @@ const SearchPage = () => {
 
     try {
       // Fetch sender details
-      const senderResponse = await axios.get(`http://localhost:5001/api/user/${senderId}`);
+      const senderResponse = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${senderId}`);
       const sender = senderResponse.data.user;
 
       // Fetch receiver details
-      const receiverResponse = await axios.get(`http://localhost:5001/api/user/${receiverId}`);
+      const receiverResponse = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${receiverId}`);
       const receiver = receiverResponse.data.user;
 
       // Update outgoing request
-      await axios.post("http://localhost:5001/api/user/update-outgoing-request", {
+      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/update-outgoing-request`, {
         senderId,
         receiverId,
         newStatus,
@@ -105,7 +105,7 @@ const SearchPage = () => {
 
       // If request is sent, send an email to the receiver
       if (newStatus === "pending") {
-        axios.post("http://localhost:5001/api/email/connection-invite", {
+        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/email/connection-invite`, {
           receiverEmail: receiver.email,
           requesterName: sender.name,
           requesterPhoto: sender.profilePhoto || DEFAULT_PROFILE_PHOTO,
@@ -131,7 +131,7 @@ const SearchPage = () => {
     setIsLoading(true)
     axios
       .post(
-        `http://localhost:5001/api/user/${userId}/refresh-possible-connections`,
+        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${userId}/refresh-possible-connections`,
         {},
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } },
       )
