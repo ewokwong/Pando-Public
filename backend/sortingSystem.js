@@ -67,7 +67,7 @@ const sortPossibleConnections = async (currentUserId, possibleConnections) => {
 
     // Set weightings of algorithm
     const utrWeight = 0.4, preferenceWeight = 0.1, proximityWeight = 0.5; // Adjusted weights
-    const proximityThresholdKm = 50; // Maximum distance in kilometers for consideration
+    const proximityThresholdKm = 100; // Updated threshold for prioritization
     const minMatchScoreThreshold = 0.1; // Minimum match score to assign a low score instead of excluding
 
     // Get current User info from DB 
@@ -78,42 +78,40 @@ const sortPossibleConnections = async (currentUserId, possibleConnections) => {
     const possibleConnectionsObjectList = await User.find({ _id: { $in: possibleConnections } });
 
     // For each connection, calculate the match score (accounting for UTR, preferences, and proximity)
-    // Sort the connections based on the calculated scores
-    const sortedUserIds = (await Promise.all(possibleConnectionsObjectList.map(async user => {
-
-        const score = calculateMatchScore(currentUser, user, utrWeight, preferenceWeight);
+    const scoredConnections = await Promise.all(possibleConnectionsObjectList.map(async user => {
+        const matchScore = calculateMatchScore(currentUser, user, utrWeight, preferenceWeight);
 
         let proximityScore = 0; // Default to 0 if no proximity data
+        let withinProximity = false; // Flag to check if within proximity threshold
         if (currentUser.location?.latitude && currentUser.location?.longitude &&
             user.location?.latitude && user.location?.longitude) {
             const distance = calculateDistance(currentUser.location, user.location);
             proximityScore = 1 / (1 + distance); // Closer distance = higher score
-            if (distance > proximityThresholdKm) {
-                proximityScore *= 0.1; // Reduce proximity score for users beyond the threshold
-            }
+            withinProximity = distance <= proximityThresholdKm; // Check if within 100km
         }
 
-        const sameLocation = !proximityScore && currentUser.location?.name && user.location?.name &&
-            currentUser.location.name.toLowerCase() === user.location.name.toLowerCase(); // Fallback to name comparison
-
         // Calculate final weighted score
-        const finalScore = (score * (utrWeight + preferenceWeight)) + (proximityScore * proximityWeight);
+        const finalScore = (matchScore * (utrWeight + preferenceWeight)) + (proximityScore * proximityWeight);
 
         // Assign a very low score if below the minimum threshold
         const adjustedScore = finalScore < minMatchScoreThreshold ? 0.01 : finalScore;
 
-        return { userId: user._id, finalScore: adjustedScore, sameLocation };
-    })))
-    .sort((a, b) => {
-        // Sort by finalScore, then sameLocation
-        if (a.finalScore === b.finalScore) {
-            return b.sameLocation - a.sameLocation; // Prioritize same location if scores are equal
-        }
-        return b.finalScore - a.finalScore; // Sort by final weighted score
-    })
-    .map(connection => connection.userId); // Extract user IDs
+        return { userId: user._id, matchScore, adjustedScore, withinProximity };
+    }));
 
-    return sortedUserIds;
+    // Sort connections: prioritize within proximity, then by matchScore or adjustedScore
+    const sortedConnections = scoredConnections.sort((a, b) => {
+        if (a.withinProximity !== b.withinProximity) {
+            return b.withinProximity - a.withinProximity; // Prioritize users within proximity
+        }
+        if (a.withinProximity) {
+            return b.matchScore - a.matchScore; // Sort by matchScore for users within proximity
+        }
+        return b.adjustedScore - a.adjustedScore; // Sort by adjustedScore for users beyond proximity
+    });
+
+    // Extract sorted user IDs
+    return sortedConnections.map(connection => connection.userId);
 };
 
 module.exports = sortPossibleConnections;
