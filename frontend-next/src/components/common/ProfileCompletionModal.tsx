@@ -100,9 +100,12 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({ open, o
         setUtrCompleted(true)
       }
 
-      if (userData.location) {
+      if (userData.location?.displayName) {
+        console.log("Location is", userData.location)
         setLocation(userData.location)
         setLocationCompleted(true)
+      } else {
+        setLocationCompleted(false)
       }
 
       // Set active tab based on what's not completed yet
