@@ -162,27 +162,26 @@ const HomePage: React.FC = () => {
 
               <div className="mt-4 space-y-4">
                 {/* Step 0: Sign Up */}
-                <motion.div
-                  className="p-4 bg-white rounded-lg border border-indigo-500/30 hover:shadow-md transition-all"
-                  whileHover={{ x: 5 }}
-                >
-                  <div className="flex items-start">
-                    <div className="bg-indigo-500/20 p-2 rounded-full mr-3 flex-shrink-0">
-                      <UserCircle size={18} className="text-indigo-500" />
+                <Link href="/sign-up" className="block">
+                  <motion.div
+                    className="p-4 bg-white rounded-lg border border-indigo-500/30 hover:shadow-md transition-all"
+                    whileHover={{ x: 5 }}
+                  >
+                    <div className="flex items-center min-h-[40px]">
+                      <div className="bg-indigo-500/20 p-2 rounded-full mr-3 flex-shrink-0">
+                        <UserCircle size={18} className="text-indigo-500" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-800 flex items-center">
+                          Step 1: Create Your Account
+                          <span className="ml-2 text-xs bg-indigo-500 px-2 py-0.5 rounded text-white hover:bg-indigo-600 transition-colors">
+                            Sign Up
+                          </span>
+                        </h3>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-sm font-medium text-gray-800 flex items-center pt-1.5">
-                        Step 1: Create Your Account
-                        <Link
-                          href="/sign-up"
-                          className="ml-2 text-xs bg-indigo-500 px-2 py-0.5 rounded text-white hover:bg-indigo-600 transition-colors"
-                        >
-                          Sign Up
-                        </Link>
-                      </h3>
-                    </div>
-                  </div>
-                </motion.div>
+                  </motion.div>
+                </Link>
 
                 {/* Step 1: Complete Profile */}
                 <motion.div
@@ -198,111 +197,112 @@ const HomePage: React.FC = () => {
                         Step 2: Complete Your Profile
                       </h3>
                       <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                        Look for the yellow banner at the top of the page! If it's not there, you have already completed this step.
+                        Look for the yellow banner at the top of the page! If it's not there, you have already completed
+                        this step.
                       </p>
                     </div>
                   </div>
                 </motion.div>
 
                 {/* Optional Step: Add More Profile Info */}
-                <motion.div
-                  className="p-4 bg-white rounded-lg border border-orange-500/30 hover:shadow-md transition-all"
-                  whileHover={{ x: 5 }}
-                >
-                  <div className="flex items-start">
-                    <div className="bg-orange-500/20 p-2 rounded-full mr-3 flex-shrink-0">
-                      <UserCircle size={18} className="text-orange-500" />
+                <Link href="/edit-profile" className="block">
+                  <motion.div
+                    className="p-4 bg-white rounded-lg border border-orange-500/30 hover:shadow-md transition-all"
+                    whileHover={{ x: 5 }}
+                  >
+                    <div className="flex items-start">
+                      <div className="bg-orange-500/20 p-2 rounded-full mr-3 flex-shrink-0">
+                        <UserCircle size={18} className="text-orange-500" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-800 flex items-center">
+                          Optional: Add in more profile info
+                          <span className="ml-2 text-xs bg-orange-500 px-2 py-0.5 rounded text-white hover:bg-orange-600 transition-colors">
+                            Edit Profile
+                          </span>
+                        </h3>
+                        <p className="text-xs text-gray-600 mt-1 leading-relaxed">
+                          Add in a profile picture, your bio and preferences!
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-sm font-medium text-gray-800 flex items-center">
-                        Optional: Add in more profile info
-                        <Link
-                          href="/edit-profile"
-                          className="ml-2 text-xs bg-orange-500 px-2 py-0.5 rounded text-white hover:bg-orange-600 transition-colors"
-                        >
-                          Edit Profile
-                        </Link>
-                      </h3>
-                      <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                        Add in a profile picture, your bio and preferences!
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
+                  </motion.div>
+                </Link>
 
                 {/* Step 3: Make Connections */}
-                <motion.div
-                  className="p-4 bg-white rounded-lg border border-blue-500/30 hover:shadow-md transition-all"
-                  whileHover={{ x: 5 }}
-                >
-                  <div className="flex items-start">
-                    <div className="bg-blue-500/20 p-2 rounded-full mr-3 flex-shrink-0">
-                      <UserPlus size={18} className="text-blue-500" />
+                <Link href="/find-friends" className="block">
+                  <motion.div
+                    className="p-4 bg-white rounded-lg border border-blue-500/30 hover:shadow-md transition-all"
+                    whileHover={{ x: 5 }}
+                  >
+                    <div className="flex items-start">
+                      <div className="bg-blue-500/20 p-2 rounded-full mr-3 flex-shrink-0">
+                        <UserPlus size={18} className="text-blue-500" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-800 flex items-center">
+                          Step 3: Make Your First Connection
+                          <span className="ml-2 text-xs bg-blue-500 px-2 py-0.5 rounded text-white hover:bg-blue-600 transition-colors">
+                            Go Now
+                          </span>
+                        </h3>
+                        <p className="text-xs text-gray-600 mt-1 leading-relaxed">
+                          You can either match with users by accepting their incoming request, or if you send them a
+                          request and they accept!
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-sm font-medium text-gray-800 flex items-center">
-                        Step 3: Make Your First Connection
-                        <Link
-                          href="/find-friends"
-                          className="ml-2 text-xs bg-blue-500 px-2 py-0.5 rounded text-white hover:bg-blue-600 transition-colors"
-                        >
-                          Go Now
-                        </Link>
-                      </h3>
-                      <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                        You can either match with users by accepting their incoming request, or if you send them a request and they accept!
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
+                  </motion.div>
+                </Link>
 
                 {/* Step 4: Chat */}
-                <motion.div
-                  className="p-4 bg-white rounded-lg border border-yellow-500/30 hover:shadow-md transition-all"
-                  whileHover={{ x: 5 }}
-                >
-                  <div className="flex items-start">
-                    <div className="bg-yellow-500/20 p-2 rounded-full mr-3 flex-shrink-0">
-                      <MessageCircle size={18} className="text-yellow-500" />
+                <Link href="/messages" className="block">
+                  <motion.div
+                    className="p-4 bg-white rounded-lg border border-yellow-500/30 hover:shadow-md transition-all"
+                    whileHover={{ x: 5 }}
+                  >
+                    <div className="flex items-start">
+                      <div className="bg-yellow-500/20 p-2 rounded-full mr-3 flex-shrink-0">
+                        <MessageCircle size={18} className="text-yellow-500" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-800 flex items-center mt-1.5">
+                          Step 4: Chat and Arrange Matches
+                          <span className="ml-2 text-xs bg-yellow-500 px-2 py-0.5 rounded text-white hover:bg-yellow-600 transition-colors">
+                            Messages
+                          </span>
+                        </h3>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-sm font-medium text-gray-800 flex items-center mt-1.5">
-                        Step 4: Chat and Arrange Matches
-                        <Link
-                          href="/messages"
-                          className="ml-2 text-xs bg-yellow-500 px-2 py-0.5 rounded text-white hover:bg-yellow-600 transition-colors"
-                        >
-                          Messages
-                        </Link>
-                      </h3>
-                    </div>
-                  </div>
-                </motion.div>
+                  </motion.div>
+                </Link>
 
                 {/* Step 5: Feedback */}
-                <motion.div
-                  className="p-4 bg-white rounded-lg border border-pink-500/30 hover:shadow-md transition-all"
-                  whileHover={{ x: 5 }}
+                <a
+                  href="https://forms.gle/i29f223SgHgJ2isP6"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
                 >
-                  <div className="flex items-start">
-                    <div className="bg-pink-500/20 p-2 rounded-full mr-3 flex-shrink-0">
-                      <ThumbsUp size={18} className="text-pink-500" />
+                  <motion.div
+                    className="p-4 bg-white rounded-lg border border-pink-500/30 hover:shadow-md transition-all"
+                    whileHover={{ x: 5 }}
+                  >
+                    <div className="flex items-start">
+                      <div className="bg-pink-500/20 p-2 rounded-full mr-3 flex-shrink-0">
+                        <ThumbsUp size={18} className="text-pink-500" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-800 flex items-center mt-1.5">
+                          Step 5: Share Your Feedback
+                          <span className="ml-2 text-xs bg-pink-500 px-2 py-0.5 rounded text-white hover:bg-pink-600 transition-colors flex items-center">
+                            Feedback <ExternalLink size={10} className="ml-1" />
+                          </span>
+                        </h3>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-sm font-medium text-gray-800 flex items-center mt-1.5">
-                        Step 5: Share Your Feedback
-                        <a
-                          href="https://forms.gle/i29f223SgHgJ2isP6"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="ml-2 text-xs bg-pink-500 px-2 py-0.5 rounded text-white hover:bg-pink-600 transition-colors flex items-center"
-                        >
-                          Feedback <ExternalLink size={10} className="ml-1" />
-                        </a>
-                      </h3>
-                    </div>
-                  </div>
-                </motion.div>
+                  </motion.div>
+                </a>
               </div>
             </div>
 
