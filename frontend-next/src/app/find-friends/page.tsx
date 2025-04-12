@@ -33,14 +33,23 @@ const FindFriendsPage = () => {
   const [userId, setUserID] = useState<string | null>(null)
   const [incomingRequests, setIncomingRequests] = useState<{ _id: string; sender: string }[]>([])
   interface UserProfile {
-    media: never[]
-    profilePhoto?: string
-    name: string
-    dob?: string
-    UTR?: string
-    location?: string
-    bio?: string
-    userPreferences?: Record<string, boolean>
+    media: string[]; // Ensure media is always an array
+    profilePhoto?: string;
+    name: string;
+    dob?: string;
+    UTR?: number; // Ensure UTR is optional
+    location?: {
+      displayName?: string; // Matches schema
+      latitude?: number;
+      longitude?: number;
+    } | null; // Allow location to be null
+    bio?: string;
+    userPreferences?: {
+      fun_social?: boolean;
+      training_for_competitions?: boolean;
+      fitness?: boolean;
+      learning_tennis?: boolean;
+    };
   }
   
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
@@ -90,22 +99,26 @@ const FindFriendsPage = () => {
 
   useEffect(() => {
     if (incomingRequests.length > 0) {
-      setUserProfile(null) // Reset profile to show loading state
+      setUserProfile(null); // Reset profile to show loading state
 
-      const userId = incomingRequests[FRONT_OF_LIST_INDEX].sender
+      const userId = incomingRequests[FRONT_OF_LIST_INDEX].sender;
       axios
         .get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${userId}`)
         .then((response) => {
-          // Add a small delay for smoother transition
+          const user = response.data?.user || {}; // Safely access user data
           setTimeout(() => {
-            setUserProfile(response.data.user)
-          }, 300)
+            setUserProfile({
+              ...user,
+              media: user.media || [], // Default to an empty array
+              location: user.location || null, // Default to null if location is missing
+            });
+          }, 300);
         })
         .catch((err) => {
-          console.error("Error fetching user profile", err)
-        })
+          console.error("Error fetching user profile", err);
+        });
     }
-  }, [incomingRequests])
+  }, [incomingRequests]);
 
   const handleAccept = async (requestId: string, senderId: string, receiverId: string | null) => {
     console.log("Accepting request with ID:", requestId);
@@ -410,6 +423,10 @@ const FindFriendsPage = () => {
                         userId: incomingRequests[FRONT_OF_LIST_INDEX].sender,
                         media: userProfile?.media || [], // Ensure media is provided as an array
                         profilePhoto: userProfile?.profilePhoto || "", // Provide a default value for profilePhoto
+                        UTR: userProfile?.UTR?.toString() || undefined, // Convert UTR to string
+                        location: userProfile?.location?.displayName
+                          ? { displayName: userProfile.location.displayName }
+                          : undefined, // Ensure location matches expected type
                       }}
                       userId={userId || ""}
                       handleOutgoingRequest={(senderId, receiverId, newStatus) => {

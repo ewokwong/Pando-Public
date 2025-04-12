@@ -33,10 +33,14 @@ const ChatComponent = ({ userId }: { userId: string }) => {
     name: string
     profilePhoto?: string
     bio?: string
-    location?: string
-    UTR?: string
-    dob?: string
-    media?: string[]
+    location?: {
+      displayName?: string; // Matches schema
+      latitude?: number;
+      longitude?: number;
+    } | null; // Allow location to be null
+    UTR?: number; // Ensure UTR is optional
+    dob?: string;
+    media?: string[]; // Ensure media is always an array
     userPreferences?: {
       fun_social?: boolean
       training_for_competitions?: boolean
@@ -117,11 +121,12 @@ const ChatComponent = ({ userId }: { userId: string }) => {
           axios
             .get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${otherUserId}`)
             .then((response) => {
-              // Ensure we have the user ID in a consistent format
               const userData = response.data.user
               setOtherUser({
                 ...userData,
                 userId: userData._id || userData.id || otherUserId,
+                media: userData.media || [], // Default to an empty array
+                location: userData.location || null, // Default to null if location is missing
               })
             })
             .catch((error) => console.error("Error fetching other user's info:", error))
@@ -343,10 +348,10 @@ const ChatComponent = ({ userId }: { userId: string }) => {
               name: otherUser.name,
               profilePhoto: otherUser.profilePhoto || "",
               bio: otherUser.bio || "",
-              location: otherUser.location || "",
-              UTR: otherUser.UTR || "",
+              location: { displayName: otherUser.location?.displayName || "Unknown" }, // Use displayName or fallback
+              UTR: otherUser.UTR?.toString() || "N/A", // Convert UTR to string
               dob: otherUser.dob || "",
-              media: otherUser.media || [],
+              media: otherUser.media || [], // Ensure media is an array
               userPreferences: otherUser.userPreferences || {},
             }}
             compatibility={Math.floor(Math.random() * 41) + 60} // Example compatibility
