@@ -66,7 +66,7 @@ const calculateDistance = (loc1, loc2) => {
 const sortPossibleConnections = async (currentUserId, possibleConnections) => {
 
     // Set weightings of algorithm
-    const utrWeight = 0.5, preferenceWeight = 0.3, proximityWeight = 0.2; // Adjusted weights
+    const utrWeight = 0.4, preferenceWeight = 0.1, proximityWeight = 0.5; // Adjusted weights
     const proximityThresholdKm = 50; // Maximum distance in kilometers for consideration
     const minMatchScoreThreshold = 0.1; // Minimum match score to assign a low score instead of excluding
 
