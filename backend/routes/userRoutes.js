@@ -1,6 +1,7 @@
 // BE Code to handle user routes
 const express = require('express');
 const User = require('../models/User');
+const Location = require('../models/Location'); // Import Location model
 const jwt = require('jsonwebtoken'); // Import jsonwebtoken
 const SECRET_KEY = process.env.SECRET_KEY; // Ensure SECRET_KEY is loaded from environment variables
 
@@ -689,28 +690,32 @@ router.put('/:userId/update-preferences', async (req, res) => {
 // Route to update user location
 router.put('/:userId/update-location', async (req, res) => {
     const { userId } = req.params;
-    const { city } = req.body;
-
-    if (!city) {
-        return res.status(400).json({ message: "City is required" });
-    }
+    const { displayName, latitude, longitude } = req.body;
 
     try {
-        const user = await User.findById(userId);
+        // Step 1: Find or create the location
+        let location = await Location.findOne({ displayName, latitude, longitude });
 
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
+        if (!location) {
+            location = new Location({ displayName, latitude, longitude });
+            await location.save();
         }
 
-        // Update the user's location
-        user.location = city;
+        // Step 2: Update the user's location field
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { location: location._id }, // Reference the Location object
+            { new: true } // Return the updated user document
+        );
 
-        await user.save();
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
 
-        res.status(200).json({ message: "Location updated successfully", location: user.location });
-    } catch (error) {
-        console.error("Error updating location:", error);
-        res.status(500).json({ message: "Error updating location", error });
+        res.status(200).json({ message: 'Location updated successfully', user });
+    } catch (err) {
+        console.error('Error updating location:', err);
+        res.status(500).json({ message: 'Failed to update location' });
     }
 });
 

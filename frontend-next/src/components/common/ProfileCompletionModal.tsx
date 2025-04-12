@@ -153,35 +153,39 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({ open, o
   }
 
   const saveLocation = async () => {
-    if (!location.trim() || !userId) return
+    if (!selectedCity || !userId) return;
 
-    setSaving(true)
-    setError("")
+    setSaving(true);
+    setError("");
 
     try {
-      const token = localStorage.getItem("token")
-      await axios.put(
-        `http://localhost:5001/api/user/${userId}/update-location`,
-        { city: location },
-        { headers: { Authorization: `Bearer ${token}` } },
-      )
+        const token = localStorage.getItem("token");
+        await axios.put(
+            `http://localhost:5001/api/user/${userId}/update-location`,
+            {
+                displayName: selectedCity.value, // Human-readable name
+                latitude: selectedCity.city.latitude, // Latitude coordinate
+                longitude: selectedCity.city.longitude, // Longitude coordinate
+            },
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
 
-      setLocationCompleted(true)
-      setSuccess("Location saved successfully!")
+        setLocationCompleted(true);
+        setSuccess("Location saved successfully!");
 
-      // Check if all sections are complete after this one is saved
-      if (utrCompleted) {
-        setActiveTab("summary")
-      } else {
-        setActiveTab("utr")
-      }
+        // Check if all sections are complete after this one is saved
+        if (utrCompleted) {
+            setActiveTab("summary");
+        } else {
+            setActiveTab("utr");
+        }
     } catch (err) {
-      console.error("Error saving location:", err)
-      setError("Failed to save location. Please try again.")
+        console.error("Error saving location:", err);
+        setError("Failed to save location. Please try again.");
     } finally {
-      setSaving(false)
+        setSaving(false);
     }
-  }
+  };
 
   // Load city options for React Select
   const loadCityOptions = async (inputValue: string) => {

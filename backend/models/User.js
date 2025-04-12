@@ -69,10 +69,11 @@ const userSchema = new mongoose.Schema({
         required: false, // Not required initially
     }],
 
+    // Location of user - look at Location.js file for more details
     location: {
-        type: String, // Store city name as a string
+        type: mongoose.Schema.Types.ObjectId, // Reference to the Location model
+        ref: 'Location', // Name of the Location model
         required: false, // Make it optional
-        default: '' // Default to an empty string
     },
 
     createdAt: {

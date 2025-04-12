@@ -379,33 +379,37 @@ const EditProfilePage = () => {
   }
 
   const handleLocationSave = async () => {
-    if (!user) return
+    if (!user || !selectedCity) return;
 
-    const token = localStorage.getItem("token")
-    if (!token) return
+    const token = localStorage.getItem("token");
+    if (!token) return;
 
     try {
-      setErrorMessage("")
+      setErrorMessage("");
       const response = await axios.put(
         `http://localhost:5001/api/user/${user.userId}/update-location`,
-        { city: newLocation },
+        {
+          displayName: selectedCity.value, // Human-readable name
+          latitude: selectedCity.city.latitude, // Latitude coordinate
+          longitude: selectedCity.city.longitude, // Longitude coordinate
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         },
-      )
+      );
 
       setUser((prevUser: any) => ({
         ...prevUser,
-        location: newLocation,
-      }))
+        location: selectedCity.value,
+      }));
 
-      setIsEditingLocation(false)
-      setSuccessMessage("Location updated successfully!")
+      setIsEditingLocation(false);
+      setSuccessMessage("Location updated successfully!");
     } catch (error) {
-      console.error("Error updating location:", error)
-      setErrorMessage("Failed to update location. Please try again.")
+      console.error("Error updating location:", error);
+      setErrorMessage("Failed to update location. Please try again.");
     }
   }
 
