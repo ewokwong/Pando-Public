@@ -17,14 +17,23 @@ const routes = require("./routes/index")
 // Server Setup
 const app = express()
 app.use(express.json())
-app.use(cors({
-  origin: [
-    "http://localhost:3000", // For local development
-    "https://pandotennis.vercal.app" // Replace with your Vercel frontend URL
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true, // If you're using cookies or authentication
-}));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      const allowedOrigins = [
+        "http://localhost:3000", // For local development
+        "https://pandotennis.vercel.app", // Your Vercel frontend URL
+      ];
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true); // Allow the request
+      } else {
+        callback(new Error("Not allowed by CORS")); // Block the request
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true, // Allow cookies and authentication headers
+  })
+);
 
 // Connecting to DB
 mongoose
