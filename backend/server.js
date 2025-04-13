@@ -114,6 +114,94 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Easter Egg for my Bubi
+app.get('/for-my-bubi', (req, res) => {
+  const html = `
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>For My Love ❤️</title>
+        <style>
+          body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff5f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+          }
+          .card {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(255, 105, 180, 0.2);
+            padding: 40px;
+            max-width: 600px;
+            text-align: center;
+            animation: fadeIn 1s ease-in;
+          }
+          .title {
+            color: #ff6b9c;
+            font-size: 32px;
+            margin-bottom: 20px;
+          }
+          .message {
+            font-size: 20px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+          }
+          .images {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+          }
+          .images img {
+            max-width: 45%; /* Make the images smaller */
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+          }
+          .footer {
+            margin-top: 30px;
+            font-size: 18px;
+          }
+          .timestamp {
+            font-size: 14px;
+            color: #999;
+            margin-top: 30px;
+          }
+          @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="card">
+          <h1 class="title">For My Bubs</h1>
+          <p class="message">
+            Thank you for the support - we are one step closer now :D I love you!!!
+          </p>
+          <div class="images">
+            <img src="https://res.cloudinary.com/dsnrydwvc/image/upload/v1744507858/Pando/zyyjids7pcjemux08qbb.jpg" alt="Image 1">
+            <img src="https://res.cloudinary.com/dsnrydwvc/image/upload/v1744507879/Pando/vygjgzyd0dbjq9vj7mha.jpg" alt="Image 2">
+          </div>
+          <p class="footer">
+            From your Lengzai
+          </p>
+          <div class="timestamp">
+            <small>This special message was created just for you at: ${new Date().toLocaleString()}</small>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+  res.status(200).send(html);
+});
+
 // Default Route for Root Path
 app.get('/', (req, res) => {
   res.status(200).json({
