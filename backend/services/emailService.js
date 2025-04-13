@@ -211,7 +211,7 @@ const sendConnectionRequestEmail = async (userEmail, data = {}) => {
     
     Player details:
     - UTR Rating: ${requesterUTR}
-    - Location: ${requesterLocation}
+    - Location: ${requesterLocation.displayName}
     
     To view this request and respond, please log in to your Pando Tennis account.
     
@@ -265,7 +265,7 @@ const sendConnectionRequestEmail = async (userEmail, data = {}) => {
                               
                               <!-- Details -->
                               <p style="margin: 0 0 5px; font-size: 14px; color: #4b5563;"><strong>UTR Rating:</strong> ${requesterUTR}</p>
-                              <p style="margin: 0 0 15px; font-size: 14px; color: #4b5563;"><strong>Location:</strong> ${requesterLocation}</p>
+                              <p style="margin: 0 0 15px; font-size: 14px; color: #4b5563;"><strong>Location:</strong> ${requesterLocation.displayName}</p>
                               
                               <p style="margin: 0 0 20px; font-size: 16px; font-style: italic; color: #6b7280;">wants to connect with you on Pando Tennis</p>
                             </td>
@@ -365,7 +365,7 @@ const sendConnectionAcceptedEmail = async (userEmail, data = {}) => {
     
     Player details:
     - UTR Rating: ${acceptorUTR}
-    - Location: ${acceptorLocation}
+    - Location: ${acceptorLocation.displayName}
     
     You can now message each other and arrange tennis matches. Start a conversation today!
     
@@ -420,7 +420,7 @@ const sendConnectionAcceptedEmail = async (userEmail, data = {}) => {
                               
                               <!-- Details -->
                               <p style="margin: 0 0 5px; font-size: 14px; color: #4b5563;"><strong>UTR Rating:</strong> ${acceptorUTR}</p>
-                              <p style="margin: 0 0 15px; font-size: 14px; color: #4b5563;"><strong>Location:</strong> ${acceptorLocation}</p>
+                              <p style="margin: 0 0 15px; font-size: 14px; color: #4b5563;"><strong>Location:</strong> ${acceptorLocation.displayName}</p>
                               
                               <p style="margin: 0 0 5px; font-size: 16px; color: #15803d;">You are now connected!</p>
                               <p style="margin: 0; font-size: 14px; color: #4b5563;">You can now message each other and arrange tennis matches.</p>
