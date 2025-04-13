@@ -41,7 +41,7 @@ const UserOutboundProfileOverview: React.FC<UserOutboundProfileOverviewProps> = 
   user,
   userId,
   handleOutgoingRequest,
-  compatibility = Math.floor(Math.random() * 41) + 60,
+  compatibility = user.compatibility || 0, // Use user.compatibility directly
 }) => {
   const [open, setOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
@@ -264,7 +264,7 @@ const UserOutboundProfileOverview: React.FC<UserOutboundProfileOverviewProps> = 
         open={open}
         onClose={() => setOpen(false)}
         user={{ ...user}}
-        compatibility={compatibility}
+        compatibility={compatibility} // Pass compatibility directly
       />
     </TooltipProvider>
   )

@@ -226,6 +226,7 @@ router.post('/add-friend', async (req, res) => {
 // 3. Should not show other users which user has already said no to -> i.e., sender is user and status is "not-sent"
 // 4. Should not show users which are friends
 // 5. Will not show users without a UTR
+// Return: [{ userId: <userId>, compatibility: <score> }, ...] sorted by score
 router.get('/:userId/get-possible-connections', async (req, res) => {
     try {
         const { userId } = req.params;
@@ -271,10 +272,17 @@ router.get('/:userId/get-possible-connections', async (req, res) => {
         // Transform the list to only contain ObjectId values
         const userIdList = possibleConnections.map(connection => connection._id);
 
-        // Sort list by sorting algorithm
-        const sortedUserIdList = await sortPossibleConnections(userId, userIdList);
+        // Sort list by sorting algorithm and include compatibility scores
+        const sortedConnectionsWithScores = await sortPossibleConnections(userId, userIdList);
 
-        res.json(sortedUserIdList);
+        // Transform the result to include userId and compatibility score
+        const response = sortedConnectionsWithScores.map(connection => ({
+            userID: connection.userId,
+            compatibility: connection.compatibility
+        }));
+
+        console.log("Response will be", response);
+        res.json(response);
     } catch (error) {
         console.error("Error fetching possible connections:", error);
         res.status(500).json({ message: "Server error" });
@@ -714,5 +722,26 @@ router.put('/:userId/update-location', async (req, res) => {
         res.status(500).json({ message: 'Failed to update location' });
     }
 });
+
+router.get('/:userId/get-compatibility/:otherUserId', async (req, res) => {
+  const { userId, otherUserId } = req.params
+
+  try {
+    const user = await User.findById(userId)
+    const otherUser = await User.findById(otherUserId)
+
+    if (!user || !otherUser) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    // Example compatibility calculation (replace with your logic)
+    const compatibility = 0.71
+
+    res.status(200).json({ compatibility })
+  } catch (error) {
+    console.error("Error fetching compatibility:", error)
+    res.status(500).json({ message: "Error fetching compatibility", error: error.message })
+  }
+})
 
 module.exports = router;

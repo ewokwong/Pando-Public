@@ -8,7 +8,7 @@ import { calculateAge } from "@/utils/dateUtils"
 import { getPreferenceColor, getPreferenceLabel } from "@/utils/preferenceUtils"
 import { DEFAULT_PROFILE_PHOTO } from "@/constants/defaults"
 
-interface UserOutboundProfileModalProps {
+interface UserChatProfileModalProps {
   open: boolean
   onClose: () => void
   user: {
@@ -29,17 +29,9 @@ interface UserOutboundProfileModalProps {
     }
     [key: string]: any
   }
-  compatibility: number
 }
 
-const UserOutboundProfileModal: React.FC<UserOutboundProfileModalProps> = ({ open, onClose, user, compatibility }) => {
-  const getCompatibilityColor = (value: number): string => {
-    if (value >= 80) return "bg-green-500"
-    if (value >= 70) return "bg-green-400"
-    if (value >= 60) return "bg-yellow-500"
-    if (value >= 50) return "bg-yellow-400"
-    return "bg-red-500"
-  }
+const UserChatProfileModal: React.FC<UserChatProfileModalProps> = ({ open, onClose, user }) => {
 
   return (
     <Dialog
@@ -77,25 +69,6 @@ const UserOutboundProfileModal: React.FC<UserOutboundProfileModalProps> = ({ ope
                 {user.name}
                 {user.dob ? `, ${calculateAge(user.dob)}` : ""}
               </h3>
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-full mb-4">
-                    <Percent size={16} className="text-brand-500" />
-                    <div className="text-sm text-gray-500 mr-1">Match Compatibility</div>
-                    <div className="w-32 h-3 bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full ${getCompatibilityColor(compatibility)}`}
-                        style={{ width: `${compatibility}%` }} // Use compatibility directly
-                      ></div>
-                    </div>
-                    <span className="text-sm font-medium text-gray-700">{compatibility}%</span>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Our system has deemed you {compatibility}% compatible</p>
-                </TooltipContent>
-              </Tooltip>
 
               <div className="flex flex-wrap justify-center gap-4">
                 {user.UTR && (
@@ -182,4 +155,4 @@ const UserOutboundProfileModal: React.FC<UserOutboundProfileModalProps> = ({ ope
   )
 }
 
-export default UserOutboundProfileModal
+export default UserChatProfileModal
