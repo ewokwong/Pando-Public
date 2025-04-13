@@ -114,11 +114,22 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Default Route for Root Path
+app.get('/', (req, res) => {
+  res.status(200).json({
+    message: 'Welcome to the Pando Backend API!',
+    endpoints: {
+      health: '/health',
+      api: '/api',
+    },
+  });
+});
+
 // Using endpoints
-app.use("/api", routes)
+app.use("/api", routes);
 
 // Export app and socket server for testing
-module.exports = { app, server, io }
+module.exports = { app, server, io };
 
 // Starting the server (if not a test)
 if (process.env.NODE_ENV !== "test") {
