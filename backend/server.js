@@ -105,6 +105,15 @@ io.on("connection", (socket) => {
   })
 })
 
+// Health Check Endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    message: 'Backend is running smoothly!',
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // Using endpoints
 app.use("/api", routes)
 
