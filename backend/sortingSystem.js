@@ -1,9 +1,8 @@
 // JS File to implement Pando's sorting system
 // Current implementation: 70% weighting on UTR matching, 30% weighting on preference matching
 const User = require('./models/User');
-const getUser = require('./models/User').findById; // Import getUser function to fetch user details
 
-{ /************ HELPER FUNCTIONS ************/}
+/************ HELPER FUNCTIONS ************/
 // Helper function to calculate distance between two locations using Haversine formula
 const calculateDistance = (loc1, loc2) => {
     const toRadians = (degrees) => degrees * (Math.PI / 180);
@@ -22,92 +21,76 @@ const calculateDistance = (loc1, loc2) => {
     return earthRadiusKm * c; // Distance in kilometers
 };
 
-// Helper function to calculate UTR score
-// UTR score will range from 0 - 1, and will be multipled by given utrWeight for final score calculation
+// Enhanced helper function to calculate UTR score
 const calculateUTRScore = (currentUser, user, utrWeight) => {
     if (currentUser.UTR && user.UTR) {
         const utrDiff = Math.abs(currentUser.UTR - user.UTR);
 
-        if (utrDiff > 4) {
-            return 0.4 * utrWeight; // Score is 0.4 if difference is greater than 4
+        if (utrDiff > 16) {
+            return 0; // No compatibility for extreme UTR differences
         }
 
-        // Scale from 0.4 to 1 as the difference decreases from 4 to 0
-        const scaledScore = 0.4 + (1 - 0.4) * ((4 - utrDiff) / 4);
-        return scaledScore * utrWeight;
+        // Penalize extreme differences more heavily
+        const penalty = utrDiff > 8 ? 0.5 : 0; // Additional penalty for large differences
+        const scaledScore = 1 - (utrDiff / 16); // Higher difference = lower score
+        return Math.max(0, (scaledScore - penalty) * utrWeight);
     }
 
-    // If either user has UTR, will give them 0.1 score
-    if (currentUser.UTR || user.UTR) {
-        return 0.1
-    }
-
-    return 0; // Neither user has UTR
+    return 0; // No UTR data for either user
 };
 
-// Helper function to calculate preference score
-const calculatePreferenceScore = async (currentUserId, userId, preferenceWeight) => {
-    // Fetch users from the database
-    const currentUser = await User.findById(currentUserId);
-    const user = await User.findById(userId);
-
-    if (!currentUser || !user) {
-        return 0; // If either user is not found, return 0
-    }
-
-    const currentUserPreferences = currentUser.userPreferences;
-    const userPreferences = user.userPreferences;
-
-    if (!currentUserPreferences && !userPreferences) {
-        return 0; // Neither user has preferences
-    }
-
+// Enhanced helper function to calculate preference score
+const calculatePreferenceScore = (currentUserPreferences, userPreferences, preferenceWeight) => {
     if (!currentUserPreferences || !userPreferences) {
-        return 0.1 * preferenceWeight; // Only one user has preferences
+        return 0; // No preferences available
     }
 
-    // Extract preference keys and calculate matches
     const preferenceKeys = Object.keys(currentUserPreferences);
-    const sharedPreferences = preferenceKeys.filter(
+    const exactMatches = preferenceKeys.filter(
         key => currentUserPreferences[key] && userPreferences[key]
     ).length;
+    const partialMatches = preferenceKeys.filter(
+        key => !currentUserPreferences[key] && !userPreferences[key]
+    ).length;
+    const mismatches = preferenceKeys.filter(
+        key => currentUserPreferences[key] !== userPreferences[key]
+    ).length;
 
-    if (sharedPreferences === preferenceKeys.length) {
-        return 1 * preferenceWeight; // Full score for exact match
-    }
+    const totalPreferences = preferenceKeys.length;
+    const matchScore = (exactMatches / totalPreferences) * 0.7; // Exact matches contribute 70%
+    const partialMatchScore = (partialMatches / totalPreferences) * 0.2; // Partial matches 20%
+    const mismatchPenalty = (mismatches / totalPreferences) * -0.1; // Mismatches penalize 10%
 
-    const unmatchedPreferences = preferenceKeys.length - sharedPreferences;
-
-    // Scale score based on matches and unmatched preferences
-    const matchScore = (sharedPreferences / preferenceKeys.length) * 0.6; // Matches contribute up to 60%
-    const nonMatchScore = (unmatchedPreferences / preferenceKeys.length) * 0.4; // Non-matches contribute up to 40%
-
-    const finalScore = 0.4 + matchScore + nonMatchScore; // Ensure score is higher than 0.4
-    return finalScore * preferenceWeight;
+    return Math.max(0, (matchScore + partialMatchScore + mismatchPenalty) * preferenceWeight);
 };
 
-// Helper function to calculate proximity score
+// Enhanced helper function to calculate proximity score
 const calculateProximityScore = (currentUser, user, proximityWeight, proximityThresholdKm) => {
     if (currentUser.location?.latitude && currentUser.location?.longitude &&
         user.location?.latitude && user.location?.longitude) {
         const distance = calculateDistance(currentUser.location, user.location);
-        const proximityScore = 1 / (1 + distance); // Closer distance = higher score
-        const withinProximity = distance <= proximityThresholdKm; // Check if within threshold
-        return { proximityScore: proximityScore * proximityWeight, withinProximity };
+
+        const baseCompatibility = distance <= 20 ? 0.6 : 0; // Base score for close range
+        const proximityScore = 1 / (1 + distance); // Inverse relation with distance
+        const withinProximity = distance <= proximityThresholdKm;
+
+        // Combine scores and normalize to ensure it does not exceed 1
+        const combinedScore = Math.min((proximityScore * proximityWeight) + (baseCompatibility * proximityWeight), proximityWeight);
+
+        return { proximityScore: combinedScore, withinProximity };
     }
     return { proximityScore: 0, withinProximity: false }; // No location data
 };
 
-{/************ THE SORTING SYSTEM ************/}
+/************ THE SORTING SYSTEM ************/
 // Return: Sorted list of possible connections with userId and matchScore
 // e.g., [{ userId: '123', matchScore: 0.8 }, { userId: '456', matchScore: 0.7 }...]
 const sortPossibleConnections = async (currentUserId, possibleConnections) => {
-
     // Set weightings of algorithm
-    const utrWeight = 0.5, preferenceWeight = 0.4, proximityWeight = 0.1; // Adjusted weights
+    const utrWeight = 0.4, preferenceWeight = 0.3, proximityWeight = 0.3; // Adjusted weights
     const proximityThresholdKm = 100; // Threshold for prioritization
 
-    // Get current User info from DB 
+    // Get current User info from DB
     const currentUser = await User.findById(currentUserId);
     if (!currentUser) throw new Error("User not found");
 
@@ -116,14 +99,22 @@ const sortPossibleConnections = async (currentUserId, possibleConnections) => {
 
     // For each connection, calculate the match score (accounting for UTR, preferences, and proximity)
     const scoredConnections = await Promise.all(possibleConnectionsObjectList.map(async user => {
-        const utrScore = calculateUTRScore(currentUser, user, utrWeight);
-        const preferenceScore = await calculatePreferenceScore(currentUserId, user._id, preferenceWeight);
         const { proximityScore, withinProximity } = calculateProximityScore(currentUser, user, proximityWeight, proximityThresholdKm);
+        const utrScore = calculateUTRScore(currentUser, user, utrWeight);
+        const preferenceScore = calculatePreferenceScore(currentUser.userPreferences, user.userPreferences, preferenceWeight);
 
-        // Calculate final weighted score
-        const finalScore = utrScore + preferenceScore + proximityScore;
+        // Calculate the total weight of metrics that are available
+        const totalWeight =
+            (currentUser.UTR && user.UTR ? utrWeight : 0) +
+            (currentUser.userPreferences && user.userPreferences ? preferenceWeight : 0) +
+            (currentUser.location && user.location ? proximityWeight : 0);
 
-        return { userId: user._id, finalScore, withinProximity };
+        // Normalize the final score to ensure compatibility is between 0 and 1
+        const finalScore = totalWeight > 0
+            ? ((utrScore + preferenceScore + proximityScore) / totalWeight)
+            : 0;
+
+        return { userId: user._id, finalScore: Math.min(finalScore, 1), withinProximity };
     }));
 
     // Sort connections: prioritize within proximity, then by finalScore

@@ -724,24 +724,24 @@ router.put('/:userId/update-location', async (req, res) => {
 });
 
 router.get('/:userId/get-compatibility/:otherUserId', async (req, res) => {
-  const { userId, otherUserId } = req.params
+    const { userId, otherUserId } = req.params;
 
-  try {
-    const user = await User.findById(userId)
-    const otherUser = await User.findById(otherUserId)
+    try {
+        // Use the sorting system to calculate compatibility
+        const compatibilityResult = await sortPossibleConnections(userId, [otherUserId]);
 
-    if (!user || !otherUser) {
-      return res.status(404).json({ message: 'User not found' })
+        if (compatibilityResult.length === 0) {
+            return res.status(404).json({ message: 'Compatibility could not be calculated' });
+        }
+
+        // Extract compatibility score for the specific user
+        const compatibility = compatibilityResult[0].compatibility;
+
+        res.status(200).json({ compatibility });
+    } catch (error) {
+        console.error("Error fetching compatibility:", error);
+        res.status(500).json({ message: "Error fetching compatibility", error: error.message });
     }
-
-    // Example compatibility calculation (replace with your logic)
-    const compatibility = 0.71
-
-    res.status(200).json({ compatibility })
-  } catch (error) {
-    console.error("Error fetching compatibility:", error)
-    res.status(500).json({ message: "Error fetching compatibility", error: error.message })
-  }
 })
 
 module.exports = router;
