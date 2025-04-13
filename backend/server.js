@@ -122,7 +122,8 @@ module.exports = { app, server, io }
 
 // Starting the server (if not a test)
 if (process.env.NODE_ENV !== "test") {
-  server.listen(5001, () => {
-    console.log("Server running on port 5001")
-  })
+  const PORT = process.env.PORT || 5001; // Use Render's PORT or fallback to 5001 for local development
+  server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 }
