@@ -105,15 +105,36 @@ io.on("connection", (socket) => {
   })
 })
 
+// Health Check Endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    message: 'Backend is running smoothly!',
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Default Route for Root Path
+app.get('/', (req, res) => {
+  res.status(200).json({
+    message: 'Welcome to the Pando Backend API!',
+    endpoints: {
+      health: '/health',
+      api: '/api',
+    },
+  });
+});
+
 // Using endpoints
-app.use("/api", routes)
+app.use("/api", routes);
 
 // Export app and socket server for testing
-module.exports = { app, server, io }
+module.exports = { app, server, io };
 
 // Starting the server (if not a test)
 if (process.env.NODE_ENV !== "test") {
-  server.listen(5001, () => {
-    console.log("Server running on port 5001")
-  })
+  const PORT = process.env.PORT || 5001; // Use Render's PORT or fallback to 5001 for local development
+  server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 }
