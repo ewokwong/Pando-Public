@@ -16,8 +16,8 @@ const SearchPage = () => {
   const router = useRouter()
 
   const [userId, setUserId] = useState<string | null>(null)
-  const [possibleConnections, setPossibleConnections] = useState<string[]>([])
-  const [userProfile, setUserProfile] = useState<{ id: string } | null>(null)
+  const [possibleConnections, setPossibleConnections] = useState<{ userID: string; compatibility: number }[]>([])
+  const [userProfile, setUserProfile] = useState<{ id: string; compatibility?: number } | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [showTip, setShowTip] = useState(true)
 
@@ -65,15 +65,17 @@ const SearchPage = () => {
 
   useEffect(() => {
     if (possibleConnections.length > 0) {
-      const userId = possibleConnections[FRONT_OF_LIST_INDEX]
+      const { userID, compatibility } = possibleConnections[FRONT_OF_LIST_INDEX]
+      console.log("Fetching profile for userID:", userID)
+      console.log("Compatibility score:", compatibility)
       setUserProfile(null) // Reset profile to show loading state
 
       axios
-        .get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${userId}`)
+        .get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${userID}`)
         .then((response) => {
           // Add a small delay for smoother transition
           setTimeout(() => {
-            setUserProfile(response.data.user)
+            setUserProfile({ ...response.data.user, compatibility: Math.round(compatibility * 100) }) // Convert to percentage
           }, 300)
         })
         .catch((err) => {
@@ -124,7 +126,7 @@ const SearchPage = () => {
   }
 
   const moveToNextProfile = () => {
-    setPossibleConnections((prev) => prev.filter((id) => id !== possibleConnections[FRONT_OF_LIST_INDEX]))
+    setPossibleConnections((prev) => prev.slice(1))
   }
 
   const refreshPossibleConnections = () => {

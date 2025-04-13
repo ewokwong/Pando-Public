@@ -47,6 +47,7 @@ const ChatComponent = ({ userId }: { userId: string }) => {
       fitness?: boolean
       learning_tennis?: boolean
     }
+    compatibility?: number // Add compatibility field
   } | null>(null)
   const [message, setMessage] = useState("")
   const [messages, setMessages] = useState<
@@ -128,6 +129,17 @@ const ChatComponent = ({ userId }: { userId: string }) => {
                 media: userData.media || [], // Default to an empty array
                 location: userData.location || null, // Default to null if location is missing
               })
+
+              // Fetch compatibility score
+              axios
+                .get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${userId}/get-compatibility/${otherUserId}`)
+                .then((compatibilityResponse) => {
+                  setOtherUser((prev) => ({
+                    ...prev,
+                    compatibility: Math.round(compatibilityResponse.data.compatibility * 100), // Convert to percentage
+                  }))
+                })
+                .catch((error) => console.error("Error fetching compatibility:", error))
             })
             .catch((error) => console.error("Error fetching other user's info:", error))
         }
@@ -354,7 +366,7 @@ const ChatComponent = ({ userId }: { userId: string }) => {
               media: otherUser.media || [], // Ensure media is an array
               userPreferences: otherUser.userPreferences || {},
             }}
-            compatibility={Math.floor(Math.random() * 41) + 60} // Example compatibility
+            compatibility={otherUser.compatibility || 0} // Pass compatibility
           />
         )}
       </AnimatePresence>

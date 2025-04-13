@@ -1,7 +1,8 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import axios from "axios"
 import { Button } from "@/components/ui/button"
 import { Check, X, Percent, MapPin, Trophy } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
@@ -41,10 +42,26 @@ const UserProfileOverview: React.FC<UserProfileOverviewProps> = ({
   user,
   userId,
   handleOutgoingRequest,
-  compatibility = Math.floor(Math.random() * 41) + 60,
 }) => {
   const [open, setOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
+  const [compatibility, setCompatibility] = useState<number>(user.compatibility || 0)
+
+  useEffect(() => {
+    // Fetch compatibility from the API
+    const fetchCompatibility = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${userId}/get-compatibility/${user.userId}`
+        )
+        setCompatibility(Math.round(response.data.compatibility * 100)) // Convert to percentage
+      } catch (error) {
+        console.error("Error fetching compatibility:", error)
+      }
+    }
+
+    fetchCompatibility()
+  }, [userId, user.userId])
 
   const activePreferences = user.userPreferences
     ? Object.entries(user.userPreferences)

@@ -7,7 +7,7 @@ import { motion } from "framer-motion"
 interface UserProfileDisplayProps {
   userProfile: any // Replace 'any' with the appropriate type if known
   userId: string // Assuming userId is a string, adjust the type if necessary
-  possibleConnections: string[] // Replace 'any' with the appropriate type if known
+  possibleConnections: { userID: string; compatibility: number }[] // Updated type for possibleConnections
   handleOutgoingRequest: (senderId: string, receiverId: string, newStatus: string) => void // Adjust the function signature if necessary
 }
 
@@ -18,6 +18,9 @@ const UserProfileDisplay: React.FC<UserProfileDisplayProps> = ({
   handleOutgoingRequest,
 }) => {
   console.log("userID is", userId)
+  console.log("userProfile is", userProfile)
+  console.log("possibleConnections is", possibleConnections)
+
   if (!userProfile) {
     return (
       <div className="flex justify-center items-center py-10">
@@ -44,6 +47,7 @@ const UserProfileDisplay: React.FC<UserProfileDisplayProps> = ({
             user={userProfile}
             userId={userId}
             handleOutgoingRequest={handleOutgoingRequest}
+            compatibility={userProfile.compatibility} // Use userProfile.compatibility
           />
         </motion.div>
       </div>
