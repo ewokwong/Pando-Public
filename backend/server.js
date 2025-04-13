@@ -17,7 +17,14 @@ const routes = require("./routes/index")
 // Server Setup
 const app = express()
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+  origin: [
+    "http://localhost:3000", // For local development
+    "https://pandotennis.vercal.app" // Replace with your Vercel frontend URL
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true, // If you're using cookies or authentication
+}));
 
 // Connecting to DB
 mongoose
@@ -36,7 +43,8 @@ mongoose
 const server = createServer(app) // Create HTTP server with Express
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000", // Adjust this for your frontend
+    origin: "http://localhost:3000",
+    origin: "https://pandotennis.vercal.app", // Adjust this for your frontend
     methods: ["GET", "POST"],
   },
 })
