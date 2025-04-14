@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, type ChangeEvent, type FormEvent } from "react"
+import { useState, type ChangeEvent, type FormEvent, useEffect } from "react"
 import FullPageContainer from "@/components/common/FullPageContainer"
 import Modal from "../components/common/Modal"
 import SmallModal from "../components/common/SmallModal"
@@ -19,6 +19,7 @@ import {
   MessageCircle,
   ThumbsUp,
   UserCircle,
+  Loader2,
 } from "lucide-react"
 import { motion } from "framer-motion"
 import Link from "next/link"
@@ -35,6 +36,7 @@ const HomePage: React.FC = () => {
   const { isLoggedIn } = useAuth()
   const [isCreateResourceModalOpen, setCreateResourceModalOpen] = useState(false)
   const [isLoginAlertModalOpen, setLoginAlertModalOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(true) // Add loading state
   const [resourceData, setResourceData] = useState<ResourceData>({
     title: "",
     description: "",
@@ -47,6 +49,34 @@ const HomePage: React.FC = () => {
     },
   })
   const [errorMessage, setErrorMessage] = useState("")
+
+  useEffect(() => {
+    const wakeUpServer = async () => {
+      try {
+        await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/health`)
+        console.log("Server is awake.")
+      } catch (error) {
+        console.error("Error waking up the server:", error)
+      } finally {
+        setIsLoading(false) // Set loading to false after server response
+      }
+    }
+
+    wakeUpServer()
+  }, [])
+
+  if (isLoading) {
+    return (
+      <FullPageContainer>
+        <div className="flex items-center justify-center h-screen">
+          <div className="flex flex-col items-center">
+            <Loader2 className="h-12 w-12 text-brand-500 animate-spin mb-4" />
+            <p className="text-gray-500 text-lg">Our server is warming up, please wait...</p>
+          </div>
+        </div>
+      </FullPageContainer>
+    )
+  }
 
   const handleCreateResource = () => {
     if (!isLoggedIn) {
