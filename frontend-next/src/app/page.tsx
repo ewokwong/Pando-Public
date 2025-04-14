@@ -5,6 +5,7 @@ import { useState, type ChangeEvent, type FormEvent } from "react"
 import FullPageContainer from "@/components/common/FullPageContainer"
 import Modal from "../components/common/Modal"
 import SmallModal from "../components/common/SmallModal"
+import AppBanner from "@/components/common/AppBanner"
 import axios from "axios"
 import { jwtDecode } from "jwt-decode"
 import { useAuth } from "@/context/AuthContext"
@@ -126,9 +127,13 @@ const HomePage: React.FC = () => {
     try {
       const decodedToken = jwtDecode<{ userId: string }>(token)
       const userId = decodedToken.userId
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/resource/${userId}/create-resource`, resourceData, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/resource/${userId}/create-resource`,
+        resourceData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
       console.log("Resource created:", response.data)
       resetResourceData()
       closeCreateResourceModal()
@@ -149,9 +154,12 @@ const HomePage: React.FC = () => {
   return (
     <FullPageContainer>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
-        <div className="flex flex-col w-full h-full pt-6">
+        <div className="flex flex-col w-full h-full pt-4 px-4 md:px-6">
+          {/* Add the new banner component */}
+          <AppBanner className="mb-6" />
+
           {/* Main Content */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 ">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* How to Pando Box */}
             <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-lg p-6 hover:bg-white/15 transition-colors">
               <div className="flex items-center mb-4">
@@ -307,7 +315,7 @@ const HomePage: React.FC = () => {
             </div>
 
             {/* Two Main Boxes */}
-            <div className="flex flex-col gap-6 h-[95vh]">
+            <div className="flex flex-col gap-6 h-auto md:h-[70vh]">
               {/* This Week's Top Users Box */}
               <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-lg p-4">
                 <div className="flex items-center mb-3">
@@ -323,7 +331,7 @@ const HomePage: React.FC = () => {
               </div>
 
               {/* Resources Box */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 h-[95vh]">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 h-auto md:h-[80vh]">
                 <div className="flex items-center mb-4">
                   <div className="mb-2 flex items-center pl-1 h-full">
                     <BookOpenCheck size={18} className="text-blue-500 mr-2" />
