@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext"
 import AuthPageContainer from "@/components/common/AuthPageContainer"
 import GoogleAuthButton from "@/components/common/GoogleAuthButton"
 import Toast from "@/components/common/Toast"
+import ServerWakingUpMessage from "@/components/common/ServerWakingUpMessage"
 import "../auth/auth-forms.css"
 import { isInAppBrowser } from "@/utils/isInAppBrowser"
 
@@ -19,14 +20,35 @@ const LoginPage: React.FC = () => {
   const [isRestricted, setIsRestricted] = useState(false)
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState("")
+  const [showServerMessage, setShowServerMessage] = useState(false)
 
   useEffect(() => {
     setIsRestricted(isInAppBrowser())
   }, [])
 
+  useEffect(() => {
+    let serverMessageTimer: NodeJS.Timeout | null = null
+
+    if (isLoading) {
+      // Show server waking up message after 5 seconds of loading
+      serverMessageTimer = setTimeout(() => {
+        setShowServerMessage(true)
+      }, 5000)
+    } else {
+      setShowServerMessage(false)
+    }
+
+    return () => {
+      if (serverMessageTimer) {
+        clearTimeout(serverMessageTimer)
+      }
+    }
+  }, [isLoading])
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
+    setShowServerMessage(false)
 
     try {
       const result = await login(email, password)
@@ -102,7 +124,7 @@ const LoginPage: React.FC = () => {
   return (
     <AuthPageContainer>
       <div className="flex items-center justify-center p-4">
-        <div className="auth-container fade-in" style={{ height: "80vh" }}>
+        <div className="auth-container fade-in" style={{ height: "auto", minHeight: "80vh" }}>
           <div className="auth-inner">
             <div className="auth-header">
               <h1 className="auth-title">Welcome back</h1>
@@ -169,6 +191,9 @@ const LoginPage: React.FC = () => {
                   "Sign in"
                 )}
               </button>
+
+              {/* Server waking up message */}
+              <ServerWakingUpMessage isVisible={showServerMessage} />
             </form>
 
             <div className="separator">

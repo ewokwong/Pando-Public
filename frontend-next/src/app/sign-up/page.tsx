@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext"
 import AuthPageContainer from "@/components/common/AuthPageContainer"
 import GoogleAuthButton from "@/components/common/GoogleAuthButton"
 import Toast from "@/components/common/Toast"
+import ServerWakingUpMessage from "@/components/common/ServerWakingUpMessage"
 import { isInAppBrowser } from "@/utils/isInAppBrowser"
 import "../auth/auth-forms.css"
 
@@ -22,14 +23,35 @@ const SignUpPage: React.FC = () => {
   const [isRestricted, setIsRestricted] = useState(false)
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState("")
+  const [showServerMessage, setShowServerMessage] = useState(false)
 
   useEffect(() => {
     setIsRestricted(isInAppBrowser())
   }, [])
 
+  useEffect(() => {
+    let serverMessageTimer: NodeJS.Timeout | null = null
+
+    if (isLoading) {
+      // Show server waking up message after 5 seconds of loading
+      serverMessageTimer = setTimeout(() => {
+        setShowServerMessage(true)
+      }, 5000)
+    } else {
+      setShowServerMessage(false)
+    }
+
+    return () => {
+      if (serverMessageTimer) {
+        clearTimeout(serverMessageTimer)
+      }
+    }
+  }, [isLoading])
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
+    setShowServerMessage(false)
 
     try {
       const response = (await signup(email, name, dob, password, confirmPassword)) as { status: number } | string
@@ -181,6 +203,9 @@ const SignUpPage: React.FC = () => {
               <button type="submit" className="form-button" disabled={isLoading}>
                 {isLoading ? "Creating account..." : "Create account"}
               </button>
+
+              {/* Server waking up message */}
+              <ServerWakingUpMessage isVisible={showServerMessage} />
             </form>
             <div className="separator">
               <span>OR</span>
