@@ -104,7 +104,7 @@ export default function PrivacyPage() {
                 transition={{ delay: 0.3, duration: 0.5 }}
                 className="text-gray-500 text-center mb-6"
               >
-                Last updated: April 14, 2023
+                Last updated: April 14, 2025
               </motion.p>
 
               <motion.div
