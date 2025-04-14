@@ -22,7 +22,7 @@ const Footer: React.FC = () => {
             </p>
             <div className="flex space-x-5">
               {/* Instagram */}
-              <a
+              {/* <a
                 href="https://www.instagram.com/pando_tennis?igsh=MTh5ajdwbnlidThkZw%3D%3D&utm_source=qr"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -32,7 +32,7 @@ const Footer: React.FC = () => {
                 <div className="from-purple-500/20 via-pink-500/20 to-yellow-500/20 p-2 rounded-lg hover:bg-gradient-to-tr hover:from-purple-500/30 hover:via-pink-500/30 hover:to-yellow-500/30 transition-all hover:shadow-lg hover:shadow-pink-500/10">
                   <Instagram className="h-5 w-5" />
                 </div>
-              </a>
+              </a> */}
 
               {/* TikTok */}
               <a
@@ -170,7 +170,9 @@ const Footer: React.FC = () => {
           <div className="col-span-1 md:col-span-3">
             <h3 className="text-lg font-semibold mb-4 text-white">Contact Us</h3>
             <ul className="space-y-3">
-              <li className="flex items-center group">
+
+              {/* Instagram */}
+              {/* <li className="flex items-center group">
                 <a
                   href="https://www.instagram.com/pando_tennis"
                   target="_blank"
@@ -183,8 +185,9 @@ const Footer: React.FC = () => {
                   <span className="text-sm">@pando_tennis</span>
                   <ExternalLink size={10} className="ml-1.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </a>
-              </li>
+              </li> */}
 
+              {/* Tiktok */}
               <li className="flex items-center group">
                 <a
                   href="https://www.tiktok.com/@pando_tennis"

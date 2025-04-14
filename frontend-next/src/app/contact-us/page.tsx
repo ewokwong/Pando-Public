@@ -36,7 +36,7 @@ const ContactUs = () => {
 
             <div className="space-y-6">
               {/* Instagram */}
-              <a
+              {/* <a
                 href="https://www.instagram.com/pando_tennis?igsh=MTh5ajdwbnlidThkZw%3D%3D&utm_source=qr"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -50,7 +50,7 @@ const ContactUs = () => {
                   <span className="text-gray-500 text-sm">@pando_tennis</span>
                 </div>
                 <ExternalLink size={16} className="ml-2 opacity-50" />
-              </a>
+              </a> */}
 
               {/* TikTok */}
               <a
