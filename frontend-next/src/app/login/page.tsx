@@ -53,7 +53,13 @@ const LoginPage: React.FC = () => {
                 </p>
               </div>
               <button
-                onClick={() => window.open(window.location.href, "_blank")}
+                onClick={() => {
+                  if (typeof window !== "undefined") {
+                    const url = window.location.href;
+                    // Attempt to open the URL in the system browser
+                    window.open(url, "_system");
+                  }
+                }}
                 className="form-button"
               >
                 Open in Browser
