@@ -63,15 +63,18 @@ const SignUpPage: React.FC = () => {
               </div>
               <button
                 onClick={() => {
-                  if (typeof window !== "undefined") {
+                  if (typeof window !== "undefined" && navigator.clipboard) {
                     const url = window.location.href;
-                    // Attempt to open the URL in the system browser
-                    window.open(url, "_system");
+                    navigator.clipboard.writeText(url).then(() => {
+                      alert("Link copied to clipboard! Open it in your browser.");
+                    }).catch(() => {
+                      alert("Failed to copy the link. Please try again.");
+                    });
                   }
                 }}
                 className="form-button"
               >
-                Open in Browser
+                Copy Link to Open in Browser
               </button>
             </div>
           </div>
