@@ -160,7 +160,7 @@ export default function TermsPage() {
                 <p>
                   If you have any questions about these Terms, please contact us at{" "}
                   <a href="pandotennis@gmail.com" className="text-brand-500 hover:underline">
-                    support@pando.com
+                  pandotennis@gmail.com
                   </a>
                 </p>
               </motion.div>
