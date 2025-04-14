@@ -69,10 +69,17 @@ const HomePage: React.FC = () => {
     return (
       <FullPageContainer>
         <div className="flex items-center justify-center h-screen">
-          <div className="flex flex-col items-center">
-            <Loader2 className="h-12 w-12 text-brand-500 animate-spin mb-4" />
-            <p className="text-gray-500 text-lg">Our server is warming up, please wait...</p>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 md:p-10 max-w-3xl w-full shadow-xl border border-gray-100"
+          >
+            <div className="flex flex-col items-center">
+              <Loader2 className="h-12 w-12 text-brand-500 animate-spin mb-4" />
+              <p className="text-gray-500 text-lg">Our server is warming up, please wait...</p>
+            </div>
+          </motion.div>
         </div>
       </FullPageContainer>
     )

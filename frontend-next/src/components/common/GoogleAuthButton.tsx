@@ -134,7 +134,7 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ className }) => {
         // User closed the popup, no need to show an error
         console.log("Sign-in popup closed by user")
       } else {
-        alert("Error signing in with Google. Please try again.")
+        alert("Error signing in with Google. Please give it a few seconds for the server to start up and try again.")
       }
     } finally {
       setIsLoading(false) // Set loading to false
