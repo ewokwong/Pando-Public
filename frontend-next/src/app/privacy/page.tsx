@@ -162,7 +162,7 @@ export default function PrivacyPage() {
               >
                 <p>
                   For privacy-related inquiries, please contact us at{" "}
-                  <a href="mailto:privacy@pando.com" className="text-brand-500 hover:underline">
+                  <a href="mailto:pandotennis@gmail.com" className="text-brand-500 hover:underline">
                     privacy@pando.com
                   </a>
                 </p>
