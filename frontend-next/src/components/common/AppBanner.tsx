@@ -4,8 +4,6 @@ import type React from "react"
 
 import { motion } from "framer-motion"
 import { Users, Percent, Trophy, Sparkles } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
 
 interface AppBannerProps {
   className?: string
