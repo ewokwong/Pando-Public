@@ -71,9 +71,9 @@ const MessagesPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
               >
-                <Link href="/sign-up" legacyBehavior>
+                {/* <Link href="/sign-up" legacyBehavior>
                   <Button className="bg-brand-500 hover:bg-brand-600">Sign Up</Button>
-                </Link>
+                </Link> */}
                 <Link href="/login" legacyBehavior>
                   <Button variant="outline">Log In</Button>
                 </Link>
