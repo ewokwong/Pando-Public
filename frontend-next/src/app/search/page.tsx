@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 import UserProfileDisplay from "@/components/common/UserProfileDisplay"
 import FullPageContainer from "@/components/common/FullPageContainer"
 import { Button } from "@/components/ui/button"
-import { Search, Users, RefreshCw, X, Check, Info } from "lucide-react"
+import { Search, Users, RefreshCw, X, Info } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { DEFAULT_PROFILE_PHOTO } from "@/constants/defaults"
@@ -61,7 +61,7 @@ const SearchPage = () => {
     } catch (err) {
       console.error("Invalid token:", err)
     }
-  }, [router])
+  }, [])
 
   useEffect(() => {
     if (possibleConnections.length > 0) {
@@ -85,25 +85,25 @@ const SearchPage = () => {
   }, [possibleConnections])
 
   const handleOutgoingRequest = async (senderId: string, receiverId: string, newStatus: string) => {
-    console.log("Sending request:", { senderId, receiverId, newStatus });
+    console.log("Sending request:", { senderId, receiverId, newStatus })
 
     try {
       // Fetch sender details
-      const senderResponse = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${senderId}`);
-      const sender = senderResponse.data.user;
+      const senderResponse = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${senderId}`)
+      const sender = senderResponse.data.user
 
       // Fetch receiver details
-      const receiverResponse = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${receiverId}`);
-      const receiver = receiverResponse.data.user;
+      const receiverResponse = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${receiverId}`)
+      const receiver = receiverResponse.data.user
 
       // Update outgoing request
       await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/update-outgoing-request`, {
         senderId,
         receiverId,
         newStatus,
-      });
+      })
 
-      console.log("Request sent successfully.");
+      console.log("Request sent successfully.")
 
       // If request is sent, send an email to the receiver
       if (newStatus === "pending") {
@@ -114,14 +114,13 @@ const SearchPage = () => {
           requesterId: senderId,
           requesterUTR: sender.UTR || "N/A",
           requesterLocation: sender.location || "Unknown",
-        });
-        console.log("Email notification sent successfully.");
+        })
+        console.log("Email notification sent successfully.")
       }
-
     } catch (err) {
-      console.error("Error handling outgoing request:", err);
+      console.error("Error handling outgoing request:", err)
     } finally {
-      moveToNextProfile();
+      moveToNextProfile()
     }
   }
 
@@ -156,20 +155,20 @@ const SearchPage = () => {
     <TooltipProvider>
       <FullPageContainer>
         <motion.div
-          className="max-w-4xl mx-auto w-full px-4 py-4 bg-slate-50 rounded-lg shadow-md"
+          className="max-w-4xl mx-auto w-full px-4 md:px-6 py-4 bg-slate-50 rounded-lg shadow-md"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
           {/* Header */}
           <motion.div
-            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 bg-slate-50 p-4 rounded-lg"
+            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 bg-slate-50 p-3 md:p-4 rounded-lg"
             initial={{ y: -20 }}
             animate={{ y: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
-            <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-              <Search className="mr-2 h-6 w-6 text-brand-500" />
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900 flex items-center">
+              <Search className="mr-2 h-5 w-5 md:h-6 md:w-6 text-brand-500" />
               Find Tennis Partners
             </h1>
 
@@ -177,7 +176,7 @@ const SearchPage = () => {
               <TooltipTrigger asChild>
                 <Button
                   onClick={() => router.push("/find-friends")}
-                  className="flex items-center gap-2 hover:bg-indigo-600 transition-all duration-300"
+                  className="flex items-center gap-2 hover:bg-indigo-600 transition-all duration-300 w-full sm:w-auto"
                 >
                   <Users size={16} />
                   <span>View Incoming Requests</span>
@@ -193,17 +192,17 @@ const SearchPage = () => {
           <AnimatePresence>
             {showTip && (
               <motion.div
-                className="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-6 flex items-center justify-between"
+                className="bg-blue-50 border border-blue-100 rounded-lg p-3 md:p-4 mb-6 flex items-center justify-between"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3 }}
               >
                 <div className="flex items-center">
-                  <div className="bg-blue-200 rounded-full p-2 mr-3">
-                    <Info className="h-5 w-5 text-blue-600" />
+                  <div className="bg-blue-200 rounded-full p-1.5 md:p-2 mr-2 md:mr-3">
+                    <Info className="h-4 w-4 md:h-5 md:w-5 text-blue-600" />
                   </div>
-                  <p className="text-sm text-blue-800">
+                  <p className="text-xs md:text-sm text-blue-800">
                     Click on a profile to view more details and connect with potential tennis partners!
                   </p>
                 </div>
@@ -230,36 +229,36 @@ const SearchPage = () => {
               {isLoading ? (
                 <motion.div
                   key="loading"
-                  className="flex flex-col justify-center items-center py-20"
+                  className="flex flex-col justify-center items-center py-16 md:py-20"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mb-4"></div>
+                  <div className="animate-spin rounded-full h-10 w-10 md:h-12 md:w-12 border-b-2 border-indigo-500 mb-4"></div>
                   <p className="text-gray-500">Finding tennis partners...</p>
                 </motion.div>
               ) : possibleConnections.length === 0 ? (
                 <motion.div
                   key="empty"
-                  className="p-8"
+                  className="p-6 md:p-8"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+                  <div className="flex flex-col items-center justify-center py-8 md:py-12 px-4 text-center">
                     <motion.div
-                      className="bg-gray-50 rounded-full p-6 mb-6"
+                      className="bg-gray-50 rounded-full p-4 md:p-6 mb-4 md:mb-6"
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ type: "spring", stiffness: 300, damping: 20 }}
                     >
-                      <RefreshCw className="h-12 w-12 text-indigo-500" />
+                      <RefreshCw className="h-8 w-8 md:h-12 md:w-12 text-indigo-500" />
                     </motion.div>
 
                     <motion.h3
-                      className="text-xl font-semibold text-gray-900 mb-3"
+                      className="text-lg md:text-xl font-semibold text-gray-900 mb-2 md:mb-3"
                       initial={{ y: 20, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ delay: 0.1 }}
@@ -268,7 +267,7 @@ const SearchPage = () => {
                     </motion.h3>
 
                     <motion.p
-                      className="text-gray-600 mb-6 max-w-md"
+                      className="text-sm md:text-base text-gray-600 mb-4 md:mb-6 max-w-md"
                       initial={{ y: 20, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ delay: 0.2 }}
@@ -294,7 +293,7 @@ const SearchPage = () => {
               ) : (
                 <motion.div
                   key="content"
-                  className="p-6"
+                  className="p-4 md:p-6"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
@@ -318,6 +317,4 @@ const SearchPage = () => {
   )
 }
 
-
 export default SearchPage
-
