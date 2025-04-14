@@ -1,108 +1,81 @@
-import React from 'react';
-import { GoogleAuthProvider, getAuth, signInWithPopup, User } from 'firebase/auth';
-import { app } from '@/firebaseConfig';
-import { useAuth } from '@/context/AuthContext';
-import axios from 'axios';
-import "./GoogleAuthButton.css"; // Import your CSS file
+import React, { useEffect } from "react";
+import { GoogleAuthProvider, getAuth, signInWithRedirect, getRedirectResult, User } from "firebase/auth";
+import { app } from "@/firebaseConfig";
+import { useAuth } from "@/context/AuthContext";
+import axios from "axios";
+import "./GoogleAuthButton.css";
 
 interface GoogleAuthButtonProps {
   className?: string;
 }
 
 const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ className }) => {
-  const { setUserObject, setIsLoggedIn } = useAuth(); // Ensure these are destructured correctly
+  const { setUserObject, setIsLoggedIn } = useAuth();
 
-  // Function to handle sign-in and update AuthContext
   const handleSignIn = (token: string, user: any) => {
-    // Store token in localStorage
-    localStorage.setItem('token', token);
-
-    // Set the logged-in state
+    localStorage.setItem("token", token);
     setIsLoggedIn(true);
-
-    // Set user object
     setUserObject(user);
-
-    // Navigate to the homepage
-    window.location.href = '/'; // Use window.location.href for navigation
+    window.location.href = "/";
   };
 
-  // To create a new user in the database when they sign in using Google Auth
   const createNewFirebaseUser = async (user: User) => {
-    const apiBaseUrl = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/auth`; // Update API base URL
-    console.log("Adding a firebase user to DB");
+    const apiBaseUrl = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/auth`;
     try {
-      // Create a new user in the database
       const response = await axios.post(`${apiBaseUrl}/add-firebase-user`, {
         firebaseUID: user.uid,
         email: user.email,
         displayName: user.displayName,
-        profilePhoto: user.photoURL || '',
+        profilePhoto: user.photoURL || "",
       });
-
-      // Extract the JWT token from the response
       const newUserToken = response.data.token;
-      console.log('New user created:', response.data);
-
-      // Call handleSignIn to update AuthContext and navigate
-      handleSignIn(newUserToken, response.data.user); // Use the custom JWT token from the backend
+      handleSignIn(newUserToken, response.data.user);
     } catch (error: any) {
-      console.error('Error creating new user:', error.message);
+      console.error("Error creating new user:", error.message);
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    console.log('Google Sign In');
-    try {
-      const provider = new GoogleAuthProvider();
-      provider.setCustomParameters({ prompt: 'select_account' });
-      const auth = getAuth(app);
+  const handleGoogleSignIn = () => {
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: "select_account" });
+    const auth = getAuth(app);
+    signInWithRedirect(auth, provider);
+  };
 
-      const result = await signInWithPopup(auth, provider);
+  useEffect(() => {
+    const auth = getAuth(app);
+    getRedirectResult(auth)
+      .then(async (result) => {
+        if (result) {
+          const user = result.user;
+          const idToken = await user.getIdToken();
+          const apiBaseUrl = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user`;
 
-      // User will be assigned based on the Google account
-      const user = result.user;
-
-      // Get Token and Sign with JWT
-      const idToken = await user.getIdToken();
-      console.log('Firebase ID Token:', idToken);
-
-      const apiBaseUrl = `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user`; // Update API base URL
-
-      console.log("User previously signed-in:", user.uid);
-
-      try {
-        // Retrieve user details from the database
-        const userDetailsResponse = await axios.get(`${apiBaseUrl}/firebase/${user.uid}`, {
-          headers: { Authorization: `Bearer ${idToken}` }, // Pass the Firebase ID token to the backend
-        });
-        console.log('User exists, retrieving details...');
-        const userDetails = userDetailsResponse.data;
-        const userToken = userDetails.token; // Correctly extract the token from the response
-        console.log('User details:', userDetails);
-
-        // Call handleSignIn to update AuthContext and navigate
-        handleSignIn(userToken, userDetails.user); // Use the custom JWT token from the backend
-
-      } catch (apiError: any) {
-        if (apiError.response && apiError.response.status === 404) {
-          console.log('User does not exist in the database. Creating a new user...');
-          await createNewFirebaseUser(user); // Call the function to create a new user
-        } else {
-          console.error('Error retrieving user from the database:', apiError.message);
-          window.alert('Error retrieving user from the database. Please try again later.');
+          try {
+            const userDetailsResponse = await axios.get(`${apiBaseUrl}/firebase/${user.uid}`, {
+              headers: { Authorization: `Bearer ${idToken}` },
+            });
+            const userDetails = userDetailsResponse.data;
+            const userToken = userDetails.token;
+            handleSignIn(userToken, userDetails.user);
+          } catch (apiError: any) {
+            if (apiError.response && apiError.response.status === 404) {
+              await createNewFirebaseUser(user);
+            } else {
+              console.error("Error retrieving user from the database:", apiError.message);
+            }
+          }
         }
-      }
-    } catch (error: any) {
-      console.error('Error during Google Sign-In:', error);
-      // Optionally, show a fallback message or log the error
-    }
-  };
+      })
+      .catch((error) => {
+        console.error("Error during redirect result handling:", error);
+      });
+  }, []);
 
   return (
     <button 
       onClick={handleGoogleSignIn} 
-      className={`google-auth-button ${className || ''}`.trim()}
+      className={`google-auth-button ${className || ""}`.trim()}
     >
       <img 
         src="https://res.cloudinary.com/dsnrydwvc/image/upload/v1743320517/png-transparent-google-company-text-logo-removebg-preview_jry9iw.png" 
