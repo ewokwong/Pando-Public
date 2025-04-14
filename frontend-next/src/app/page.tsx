@@ -315,7 +315,7 @@ const HomePage: React.FC = () => {
             </div>
 
             {/* Two Main Boxes */}
-            <div className="flex flex-col gap-6 h-auto md:h-[95vh]">
+            <div className="flex flex-col gap-6 h-auto md:h-[70vh]">
               {/* This Week's Top Users Box */}
               <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-lg p-4">
                 <div className="flex items-center mb-3">
@@ -331,7 +331,7 @@ const HomePage: React.FC = () => {
               </div>
 
               {/* Resources Box */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 h-auto md:h-[95vh]">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 h-auto md:h-[80vh]">
                 <div className="flex items-center mb-4">
                   <div className="mb-2 flex items-center pl-1 h-full">
                     <BookOpenCheck size={18} className="text-blue-500 mr-2" />
