@@ -23,15 +23,15 @@ const UserProfileDisplay: React.FC<UserProfileDisplayProps> = ({
 
   if (!userProfile) {
     return (
-      <div className="flex justify-center items-center py-10">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-500"></div>
+      <div className="flex justify-center items-center py-8 md:py-10">
+        <div className="animate-spin rounded-full h-8 w-8 md:h-10 md:w-10 border-b-2 border-brand-500"></div>
       </div>
     )
   }
 
   return (
     <motion.div
-      className="UserProfileDisplay"
+      className="UserProfileDisplay w-full"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -56,4 +56,3 @@ const UserProfileDisplay: React.FC<UserProfileDisplayProps> = ({
 }
 
 export default UserProfileDisplay
-
