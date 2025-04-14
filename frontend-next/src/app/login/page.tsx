@@ -6,6 +6,7 @@ import Link from "next/link"
 import { useAuth } from "@/context/AuthContext"
 import AuthPageContainer from "@/components/common/AuthPageContainer"
 import GoogleAuthButton from "@/components/common/GoogleAuthButton"
+import Toast from "@/components/common/Toast"
 import "../auth/auth-forms.css"
 import { isInAppBrowser } from "@/utils/isInAppBrowser"
 
@@ -16,6 +17,8 @@ const LoginPage: React.FC = () => {
   const [message, setMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isRestricted, setIsRestricted] = useState(false)
+  const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState("")
 
   useEffect(() => {
     setIsRestricted(isInAppBrowser())
@@ -39,6 +42,30 @@ const LoginPage: React.FC = () => {
     }
   }
 
+  const handleCopyLink = () => {
+    if (typeof window !== "undefined" && navigator.clipboard) {
+      const url = window.location.href
+      navigator.clipboard
+        .writeText(url)
+        .then(() => {
+          setToastMessage("Link copied! Open it in your browser")
+          setShowToast(true)
+        })
+        .catch(() => {
+          setToastMessage("Failed to copy link. Please try again")
+          setShowToast(true)
+        })
+    }
+  }
+
+  const openInBrowser = () => {
+    // This function would ideally open the default browser
+    // But since we can't directly do that from a web app,
+    // we'll just provide instructions
+    setToastMessage("Please open this link in your default browser")
+    setShowToast(true)
+  }
+
   if (isRestricted) {
     return (
       <AuthPageContainer>
@@ -52,24 +79,22 @@ const LoginPage: React.FC = () => {
                   continue.
                 </p>
               </div>
-              <button
-                onClick={() => {
-                  if (typeof window !== "undefined" && navigator.clipboard) {
-                    const url = window.location.href;
-                    navigator.clipboard.writeText(url).then(() => {
-                      alert("Link copied to clipboard! Open it in your browser.");
-                    }).catch(() => {
-                      alert("Failed to copy the link. Please try again.");
-                    });
-                  }
-                }}
-                className="form-button"
-              >
+              <button onClick={handleCopyLink} className="form-button">
                 Copy Link to Open in Browser
               </button>
             </div>
           </div>
         </div>
+        <Toast
+          message={toastMessage}
+          type="info"
+          isVisible={showToast}
+          onClose={() => setShowToast(false)}
+          action={{
+            label: "Open Browser",
+            onClick: openInBrowser,
+          }}
+        />
       </AuthPageContainer>
     )
   }
@@ -163,6 +188,16 @@ const LoginPage: React.FC = () => {
           </div>
         </div>
       </div>
+      <Toast
+        message={toastMessage}
+        type="info"
+        isVisible={showToast}
+        onClose={() => setShowToast(false)}
+        action={{
+          label: "Open Browser",
+          onClick: openInBrowser,
+        }}
+      />
     </AuthPageContainer>
   )
 }

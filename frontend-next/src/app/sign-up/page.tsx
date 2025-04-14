@@ -1,52 +1,79 @@
+"use client"
 
-"use client";
-
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
-import AuthPageContainer from "@/components/common/AuthPageContainer";
-import GoogleAuthButton from "@/components/common/GoogleAuthButton";
-import { isInAppBrowser } from "@/utils/isInAppBrowser";
-import "../auth/auth-forms.css";
+import type React from "react"
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import { useAuth } from "@/context/AuthContext"
+import AuthPageContainer from "@/components/common/AuthPageContainer"
+import GoogleAuthButton from "@/components/common/GoogleAuthButton"
+import Toast from "@/components/common/Toast"
+import { isInAppBrowser } from "@/utils/isInAppBrowser"
+import "../auth/auth-forms.css"
 
 const SignUpPage: React.FC = () => {
-  const { signup } = useAuth();
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [dob, setDob] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isRestricted, setIsRestricted] = useState(false);
+  const { signup } = useAuth()
+  const [email, setEmail] = useState("")
+  const [name, setName] = useState("")
+  const [dob, setDob] = useState("")
+  const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [message, setMessage] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [isRestricted, setIsRestricted] = useState(false)
+  const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState("")
 
   useEffect(() => {
-    setIsRestricted(isInAppBrowser());
-  }, []);
+    setIsRestricted(isInAppBrowser())
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
+    e.preventDefault()
+    setIsLoading(true)
 
     try {
-      const response = (await signup(email, name, dob, password, confirmPassword)) as { status: number } | string;
+      const response = (await signup(email, name, dob, password, confirmPassword)) as { status: number } | string
 
       if (!response) {
-        setMessage("No response received from signup.");
-        return;
+        setMessage("No response received from signup.")
+        return
       }
 
       if (response && typeof response === "string" && response.includes("User created successfully")) {
-        window.location.href = "/";
+        window.location.href = "/"
       } else {
-        setMessage(`${response}`);
+        setMessage(`${response}`)
       }
     } catch (error) {
-      setMessage("Something went wrong. Please try again.");
+      setMessage("Something went wrong. Please try again.")
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
+
+  const handleCopyLink = () => {
+    if (typeof window !== "undefined" && navigator.clipboard) {
+      const url = window.location.href
+      navigator.clipboard
+        .writeText(url)
+        .then(() => {
+          setToastMessage("Link copied! Open it in your browser")
+          setShowToast(true)
+        })
+        .catch(() => {
+          setToastMessage("Failed to copy link. Please try again")
+          setShowToast(true)
+        })
+    }
+  }
+
+  const openInBrowser = () => {
+    // This function would ideally open the default browser
+    // But since we can't directly do that from a web app,
+    // we'll just provide instructions
+    setToastMessage("Please open this link in your default browser")
+    setShowToast(true)
+  }
 
   if (isRestricted) {
     return (
@@ -61,26 +88,24 @@ const SignUpPage: React.FC = () => {
                   continue.
                 </p>
               </div>
-              <button
-                onClick={() => {
-                  if (typeof window !== "undefined" && navigator.clipboard) {
-                    const url = window.location.href;
-                    navigator.clipboard.writeText(url).then(() => {
-                      alert("Link copied to clipboard! Open it in your browser.");
-                    }).catch(() => {
-                      alert("Failed to copy the link. Please try again.");
-                    });
-                  }
-                }}
-                className="form-button"
-              >
+              <button onClick={handleCopyLink} className="form-button">
                 Copy Link to Open in Browser
               </button>
             </div>
           </div>
         </div>
+        <Toast
+          message={toastMessage}
+          type="info"
+          isVisible={showToast}
+          onClose={() => setShowToast(false)}
+          action={{
+            label: "Open Browser",
+            onClick: openInBrowser,
+          }}
+        />
       </AuthPageContainer>
-    );
+    )
   }
 
   return (
@@ -180,8 +205,18 @@ const SignUpPage: React.FC = () => {
           </div>
         </div>
       </div>
+      <Toast
+        message={toastMessage}
+        type="info"
+        isVisible={showToast}
+        onClose={() => setShowToast(false)}
+        action={{
+          label: "Open Browser",
+          onClick: openInBrowser,
+        }}
+      />
     </AuthPageContainer>
-  );
-};
+  )
+}
 
-export default SignUpPage;
+export default SignUpPage
