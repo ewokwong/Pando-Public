@@ -1,12 +1,13 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useAuth } from "@/context/AuthContext"
 import AuthPageContainer from "@/components/common/AuthPageContainer"
 import GoogleAuthButton from "@/components/common/GoogleAuthButton"
 import "../auth/auth-forms.css"
+import { isInAppBrowser } from "@/utils/isInAppBrowser"
 
 const LoginPage: React.FC = () => {
   const { login, errorMessage } = useAuth()
@@ -14,23 +15,54 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState("")
   const [message, setMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [isRestricted, setIsRestricted] = useState(false)
+
+  useEffect(() => {
+    setIsRestricted(isInAppBrowser())
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
 
     try {
-      const result = await login(email, password); // Capture the return value
+      const result = await login(email, password)
       if (!result) {
-        window.location.href = "/"; // Redirect only if login is successful
+        window.location.href = "/"
       } else {
-        setMessage(result); // Display the error message
+        setMessage(result)
       }
     } catch (error) {
       setMessage(errorMessage || "Login failed. Please check your credentials.")
     } finally {
       setIsLoading(false)
     }
+  }
+
+  if (isRestricted) {
+    return (
+      <AuthPageContainer>
+        <div className="flex items-center justify-center p-4">
+          <div className="auth-container fade-in">
+            <div className="auth-inner">
+              <div className="auth-header">
+                <h1 className="auth-title">Open in Browser</h1>
+                <p className="auth-subtitle">
+                  It looks like you're using an app that restricts sign-in. Please open this page in your browser to
+                  continue.
+                </p>
+              </div>
+              <button
+                onClick={() => window.open(window.location.href, "_blank")}
+                className="form-button"
+              >
+                Open in Browser
+              </button>
+            </div>
+          </div>
+        </div>
+      </AuthPageContainer>
+    )
   }
 
   return (
@@ -127,4 +159,3 @@ const LoginPage: React.FC = () => {
 }
 
 export default LoginPage
-
