@@ -48,6 +48,7 @@ const ChatComponent = ({ userId }: { userId: string }) => {
       learning_tennis?: boolean
     }
     compatibility?: number // Add compatibility field
+    email?: string // Add email field
   } | null>(null)
   const [message, setMessage] = useState("")
   const [messages, setMessages] = useState<
@@ -126,6 +127,7 @@ const ChatComponent = ({ userId }: { userId: string }) => {
               setOtherUser({
                 ...userData,
                 userId: userData._id || userData.id || otherUserId,
+                email: userData.email || null, // Default to null if email is missing
                 media: userData.media || [], // Default to an empty array
                 location: userData.location || null, // Default to null if location is missing
               })
@@ -229,7 +231,7 @@ const ChatComponent = ({ userId }: { userId: string }) => {
     }
   }
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (message.trim() === "" || !chatId) return
 
     const messageData = {
@@ -239,29 +241,56 @@ const ChatComponent = ({ userId }: { userId: string }) => {
     }
 
     axios
-      .post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/chat/${chatId}/send-message`, messageData)
-      .then((response) => {
-        // Add the message to the local state
-        const newMessage = {
+    .post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/chat/${chatId}/send-message`, messageData)
+    .then((response) => {
+      // Add the message to the local state
+      const newMessage = {
+        ...response.data,
+        senderName: "You", // Add sender name for display
+      };
+
+      setMessages((prev) => [...prev, newMessage]);
+
+      if (socket) {
+        // Emit the message to others in the chat
+        socket.emit("sendMessage", {
           ...response.data,
-          senderName: "You", // Add sender name for display
-        }
+          chatId: chatId,
+          senderName: "You",
+        });
+      }
 
-        setMessages((prev) => [...prev, newMessage])
+      // Get Sender Info
+      try {
+        axios
+          .get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/user/${userId}`)
+          .then((senderResponse) => {
+            const senderData = senderResponse.data.user;
 
-        if (socket) {
-          // Emit the message to others in the chat
-          socket.emit("sendMessage", {
-            ...response.data,
-            chatId: chatId,
-            senderName: "You",
+            // Send email notification about the new message
+            return axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/email/new-message`, {
+              receiverEmail: otherUser?.email, // Email of the receiver
+              senderName: senderData.name, // Sender's name from fetched data
+              senderPhoto: senderData.profilePhoto || "/placeholder.svg", // Sender's photo
+              senderId: senderData.userId, // Sender's ID
+              messagePreview: message, // Message preview
+              chatId: chatId, // Chat ID
+            });
           })
-        }
+          .then(() => {
+            console.log("New message email sent successfully.");
+          })
+          .catch((error) => {
+            console.error("Error sending new message email:", error);
+          });
+      } catch (error) {
+        console.error("Error sending new message email:", error);
+      }
 
-        setMessage("") // Clear the input field after sending
-        setShouldScrollToBottom(true)
-      })
-      .catch((error) => console.error("Error sending message", error))
+      setMessage(""); // Clear the input field after sending
+      setShouldScrollToBottom(true);
+    })
+    .catch((error) => console.error("Error sending message", error));
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {

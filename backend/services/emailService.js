@@ -280,10 +280,7 @@ const sendConnectionRequestEmail = async (userEmail, data = {}) => {
                             <td align="center">
                               <div>
                                 <!-- Accept Button -->
-                                <a href="https://pandotennis.com/connections/accept/${requesterId}" style="display: inline-block; padding: 12px 24px; background-color: #4f46e5; color: #ffffff; text-decoration: none; font-weight: 600; border-radius: 4px; font-size: 16px; margin-right: 10px;">Accept Request</a>
-                                
-                                <!-- View Profile Button -->
-                                <a href="https://pandotennis.com/profile/${requesterId}" style="display: inline-block; padding: 12px 24px; background-color: #ffffff; color: #4f46e5; text-decoration: none; font-weight: 600; border-radius: 4px; font-size: 16px; border: 1px solid #4f46e5;">View Profile</a>
+                                <a href="https://pandotennis.vercel.app/find-friends" style="display: inline-block; padding: 12px 24px; background-color: #4f46e5; color: #ffffff; text-decoration: none; font-weight: 600; border-radius: 4px; font-size: 16px; margin-right: 10px;">Accept Request</a>
                               </div>
                             </td>
                           </tr>
@@ -591,7 +588,7 @@ const sendNewMessageEmail = async (userEmail, data = {}) => {
                         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 30px 0;">
                           <tr>
                             <td align="center">
-                              <a href="https://pandotennis.com/messages/${chatId}" style="display: inline-block; padding: 12px 24px; background-color: #4f46e5; color: #ffffff; text-decoration: none; font-weight: 600; border-radius: 4px; font-size: 16px;">View & Reply</a>
+                              <a href="https://pandotennis.vercel.app/messages" style="display: inline-block; padding: 12px 24px; background-color: #4f46e5; color: #ffffff; text-decoration: none; font-weight: 600; border-radius: 4px; font-size: 16px;">View & Reply</a>
                             </td>
                           </tr>
                         </table>
