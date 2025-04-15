@@ -5,9 +5,11 @@ const userSchema = new mongoose.Schema({
     // MongoDB auto-generates an _id for each document which will be used as unique User_ID (primary key)
 
     // Firebase UID will be used to identify users who use google Auth
+    // Sparse means that it will be skipped for documents that do not have this field
     firebaseUID: {
         type: String,
-        unique: true,
+        unique: false, // Set unique to false here; we'll define a partial index later
+        sparse: true,  // Allows null values without violating the index
     },
 
     email: {

@@ -68,6 +68,7 @@ const SignUpPage: React.FC = () => {
       }
     } catch (error) {
       setMessage("Something went wrong. Please try again.")
+      console.log(error)
     } finally {
       setIsLoading(false)
     }
