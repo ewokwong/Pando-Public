@@ -13,16 +13,16 @@ const cron = require('node-cron');
 const axios = require('axios');
 
 // Schedule a cron job to ping the health endpoint every 13 minutes
-cron.schedule('*/1 * * * *', async () => {
-  try {
-    console.log('Pinging Pando health check endpoint...');
-    const healthCheckUrl = `https://pando-public.onrender.com/health`;
-    const response = await axios.get(healthCheckUrl);
-    console.log('Health check response:', response.data);
-  } catch (error) {
-    console.error('Error pinging health check endpoint:', error.message);
-  }
-});
+// cron.schedule('*/1 * * * *', async () => {
+//   try {
+//     console.log('Pinging Pando health check endpoint...');
+//     const healthCheckUrl = `https://pando-public.onrender.com/health`;
+//     const response = await axios.get(healthCheckUrl);
+//     console.log('Health check response:', response.data);
+//   } catch (error) {
+//     console.error('Error pinging health check endpoint:', error.message);
+//   }
+// });
 
 // Load from .env file
 require("dotenv").config()
