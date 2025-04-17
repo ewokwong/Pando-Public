@@ -8,6 +8,20 @@ const { createServer } = require("http") // Import HTTP server
 const { Server } = require("socket.io") // Import Socket.io
 const Chat = require("./models/Chat") // Import Chat model
 
+// For automated cron jobs
+const cron = require('node-cron');
+
+// Schedule a cron job to ping the health endpoint every 13 minutes
+cron.schedule('*/13 * * * *', async () => {
+  try {
+    console.log('Pinging Pando health check endpoint...');
+    const response = await axios.get('https://pando-public.onrender.com/health');
+    console.log('Health check response:', response.data);
+  } catch (error) {
+    console.error('Error pinging health check endpoint:', error.message);
+  }
+});
+
 // Load from .env file
 require("dotenv").config()
 
