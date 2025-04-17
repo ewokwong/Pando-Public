@@ -10,6 +10,7 @@ const Chat = require("./models/Chat") // Import Chat model
 
 // For automated cron jobs
 const cron = require('node-cron');
+const axios = require('axios');
 
 // Schedule a cron job to ping the health endpoint every 13 minutes
 cron.schedule('*/1 * * * *', async () => {
