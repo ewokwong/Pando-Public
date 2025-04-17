@@ -17,8 +17,10 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ className }) => {
   const { setUserObject, setIsLoggedIn } = useAuth() // Ensure these are destructured correctly
   const [isLoading, setIsLoading] = useState(false) // Add loading state
   const [showServerMessage, setShowServerMessage] = useState(false)
-  const [loadingStage, setLoadingStage] = useState<"initial" | "google" | "server">("initial")
+  const [loadingStage, setLoadingStage] = useState<"initial" | "google" | "server" | "error">("initial")
 
+  // Function to sleep for 2 seconds on error
+  const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
   // Set up timer for server message
   useEffect(() => {
     let serverMessageTimer: NodeJS.Timeout | null = null
@@ -129,13 +131,10 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ className }) => {
       }
     } catch (error: any) {
       console.error("Error during Google Sign-In:", error)
-      // Optionally, show a fallback message or log the error
-      // if (error.code === "auth/popup-closed-by-user") {
-      //   // User closed the popup, no need to show an error
-      //   console.log("Sign-in popup closed by user")
-      // } else {
-      //   alert("Error signing in with Google. Please give it a few seconds for the server to start up and try again.")
-      // }
+
+      // Get user to try button one more time
+      setLoadingStage("error") // Update loading stage to error
+      sleep(2000)
     } finally {
       setIsLoading(false) // Set loading to false
     }
@@ -146,6 +145,8 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ className }) => {
       return "Authenticating with Google..."
     } else if (loadingStage === "server") {
       return "Processing your account..."
+    } else if (loadingStage === "error") {
+      return "Error occurred. Please try once more :D"
     }
     return "Signing in..."
   }
