@@ -21,11 +21,9 @@ const LoginPage: React.FC = () => {
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState("")
   const [showServerMessage, setShowServerMessage] = useState(false)
-  const [userAgent, setUserAgent] = useState("")
 
   useEffect(() => {
     setIsRestricted(isInAppBrowser())
-    setUserAgent(navigator.userAgent)
   }, [])
 
   useEffect(() => {
@@ -131,7 +129,6 @@ const LoginPage: React.FC = () => {
             <div className="auth-header">
               <h1 className="auth-title">Welcome back</h1>
               <p className="auth-subtitle">Sign in to your Pando account</p>
-              <p>User Agent: {userAgent}</p>
             </div>
 
             <form onSubmit={handleSubmit} className="auth-form">
