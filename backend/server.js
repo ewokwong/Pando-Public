@@ -8,22 +8,6 @@ const { createServer } = require("http") // Import HTTP server
 const { Server } = require("socket.io") // Import Socket.io
 const Chat = require("./models/Chat") // Import Chat model
 
-// For automated cron jobs
-const cron = require('node-cron');
-const axios = require('axios');
-
-// Schedule a cron job to ping the health endpoint every 13 minutes
-cron.schedule('*/13 * * * *', async () => {
-  try {
-    console.log('Pinging Pando health check endpoint...');
-    const healthCheckUrl = `https://pando-public.onrender.com/health`;
-    const response = await axios.get(healthCheckUrl);
-    console.log('Health check response:', response.data);
-  } catch (error) {
-    console.error('Error pinging health check endpoint:', error.message);
-  }
-});
-
 // Load from .env file
 require("dotenv").config()
 
@@ -260,3 +244,19 @@ if (process.env.NODE_ENV !== "test") {
     console.log(`Server running on port ${PORT}`);
   });
 }
+
+// For automated cron jobs
+const cron = require('node-cron');
+const axios = require('axios');
+
+// Schedule a cron job to ping the health endpoint every 13 minutes
+cron.schedule('*/1 * * * *', async () => {
+  try {
+    console.log('Pinging Pando health check endpoint...');
+    const healthCheckUrl = `${process.env.BACKEND_URL}/health`; // Use BACKEND_URL from .env
+    const response = await axios.get(healthCheckUrl);
+    console.log('Health check response:', response.data);
+  } catch (error) {
+    console.error('Error pinging health check endpoint:', error.message);
+  }
+});
