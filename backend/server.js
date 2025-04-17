@@ -16,7 +16,7 @@ const axios = require('axios');
 cron.schedule('*/1 * * * *', async () => {
   try {
     console.log('Pinging Pando health check endpoint...');
-    const healthCheckUrl = `${process.env.BACKEND_URL}/health`;
+    const healthCheckUrl = `https://pando-public.onrender.com/health`;
     const response = await axios.get(healthCheckUrl);
     console.log('Health check response:', response.data);
   } catch (error) {
