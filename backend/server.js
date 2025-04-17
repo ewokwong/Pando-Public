@@ -239,9 +239,8 @@ app.get('/', (req, res) => {
 // Schedule a cron job to ping the health endpoint every 13 minutes
 cron.schedule('*/13 * * * *', async () => {
   try {
-    console.log('Pinging Pando health check endpoint...');
-    const healthCheckUrl = `https://pando-public.onrender.com/health`; // Use BACKEND_URL from .env
-    const response = await axios.get(healthCheckUrl);
+    console.log('Pinging Pando health check endpoint...', process.env.HEALTHCHECK_URL);
+    const response = await axios.get(process.env.HEALTHCHECK_URL);
     console.log('Health check response:', response.data);
   } catch (error) {
     console.error('Error pinging health check endpoint:', error.message);
