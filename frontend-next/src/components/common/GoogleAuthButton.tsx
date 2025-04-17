@@ -134,7 +134,7 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ className }) => {
       console.error("Error during Google Sign-In:", error)
 
       // Get user to try button one more time
-      setErrorMessage("Error during Google Sign-In. Please try once more :D")
+      setErrorMessage("Please try once more!")
       setTimeout(() => setErrorMessage(""), 3000); 
     } finally {
       setIsLoading(false) // Set loading to false
