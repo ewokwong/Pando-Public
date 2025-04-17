@@ -8,6 +8,11 @@ const { createServer } = require("http") // Import HTTP server
 const { Server } = require("socket.io") // Import Socket.io
 const Chat = require("./models/Chat") // Import Chat model
 
+// For automated cron jobs
+const cron = require('node-cron');
+const axios = require('axios');
+
+
 // Load from .env file
 require("dotenv").config()
 
@@ -220,6 +225,7 @@ app.get('/for-my-bubi', (req, res) => {
   res.status(200).send(html);
 });
 
+
 // Default Route for Root Path
 app.get('/', (req, res) => {
   res.status(200).json({
@@ -229,6 +235,18 @@ app.get('/', (req, res) => {
       api: '/api',
     },
   });
+});
+
+// Schedule a cron job to ping the health endpoint every 13 minutes
+cron.schedule('*/1 * * * *', async () => {
+  try {
+    console.log('Pinging Pando health check endpoint...');
+    const healthCheckUrl = `${process.env.BACKEND_URL}/health`; // Use BACKEND_URL from .env
+    const response = await axios.get(healthCheckUrl);
+    console.log('Health check response:', response.data);
+  } catch (error) {
+    console.error('Error pinging health check endpoint:', error.message);
+  }
 });
 
 // Using endpoints
@@ -245,18 +263,5 @@ if (process.env.NODE_ENV !== "test") {
   });
 }
 
-// For automated cron jobs
-const cron = require('node-cron');
-const axios = require('axios');
 
-// Schedule a cron job to ping the health endpoint every 13 minutes
-cron.schedule('*/1 * * * *', async () => {
-  try {
-    console.log('Pinging Pando health check endpoint...');
-    const healthCheckUrl = `${process.env.BACKEND_URL}/health`; // Use BACKEND_URL from .env
-    const response = await axios.get(healthCheckUrl);
-    console.log('Health check response:', response.data);
-  } catch (error) {
-    console.error('Error pinging health check endpoint:', error.message);
-  }
-});
+
