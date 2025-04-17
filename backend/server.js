@@ -124,6 +124,7 @@ io.on("connection", (socket) => {
 
 // Health Check Endpoint
 app.get('/health', (req, res) => {
+  console.log("Health check endpoint hit")
   res.status(200).json({
     status: 'OK',
     message: 'Backend is running smoothly!',
