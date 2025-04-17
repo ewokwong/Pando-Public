@@ -18,6 +18,7 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ className }) => {
   const [isLoading, setIsLoading] = useState(false) // Add loading state
   const [showServerMessage, setShowServerMessage] = useState(false)
   const [loadingStage, setLoadingStage] = useState<"initial" | "google" | "server" | "error">("initial")
+  const [errorMessage, setErrorMessage] = useState("")
 
   // Function to sleep for 2 seconds on error
   const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -133,8 +134,8 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ className }) => {
       console.error("Error during Google Sign-In:", error)
 
       // Get user to try button one more time
-      setLoadingStage("error") // Update loading stage to error
-      sleep(2000)
+      setErrorMessage("Error during Google Sign-In. Please try once more :D")
+      setTimeout(() => setErrorMessage(""), 3000); 
     } finally {
       setIsLoading(false) // Set loading to false
     }
@@ -156,7 +157,7 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ className }) => {
       <button
         onClick={handleGoogleSignIn}
         className={`google-auth-button ${className || ""}`.trim()}
-        disabled={isLoading} // Disable button while loading
+        disabled={isLoading}
       >
         {isLoading ? (
           <span className="flex items-center justify-center">
@@ -166,7 +167,14 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ className }) => {
               fill="none"
               viewBox="0 0 24 24"
             >
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
               <path
                 className="opacity-75"
                 fill="currentColor"
@@ -175,6 +183,8 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ className }) => {
             </svg>
             {getLoadingText()}
           </span>
+        ) : errorMessage ? (
+          <span className="text-red-500">{errorMessage}</span> // Show error message
         ) : (
           <>
             <img
@@ -186,8 +196,6 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ className }) => {
           </>
         )}
       </button>
-
-      {/* Show server waking up message when appropriate */}
       {isLoading && <ServerWakingUpMessage isVisible={showServerMessage} />}
     </div>
   )
