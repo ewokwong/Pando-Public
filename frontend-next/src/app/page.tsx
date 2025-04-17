@@ -50,20 +50,19 @@ const HomePage: React.FC = () => {
   })
   const [errorMessage, setErrorMessage] = useState("")
 
-  // useEffect(() => {
-  //   const wakeUpServer = async () => {
-  //     try {
-  //       await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/health`)
-  //       console.log("Server is awake.")
-  //     } catch (error) {
-  //       console.error("Error waking up the server:", error)
-  //     } finally {
-  //       setIsLoading(false) // Set loading to false after server response
-  //     }
-  //   }
+  useEffect(() => {
+    const wakeUpServer = async () => {
+      try {
+        await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/health`)
+      } catch (error) {
+        console.error("Error waking up the server:", error)
+      } finally {
+        setIsLoading(false) // Set loading to false after server response
+      }
+    }
 
-  //   wakeUpServer()
-  // }, [])
+    wakeUpServer()
+  }, [])
 
   if (isLoading) {
     return (
