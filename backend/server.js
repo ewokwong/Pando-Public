@@ -237,7 +237,7 @@ app.get('/', (req, res) => {
 });
 
 // Schedule a cron job to ping the health endpoint every 13 minutes
-cron.schedule('*/1 * * * *', async () => {
+cron.schedule('*/13 * * * *', async () => {
   try {
     console.log('Pinging Pando health check endpoint...');
     const healthCheckUrl = `https://pando-public.onrender.com/health`; // Use BACKEND_URL from .env
