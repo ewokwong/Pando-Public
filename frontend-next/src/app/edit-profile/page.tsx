@@ -56,6 +56,8 @@ const EditProfilePage = () => {
   const [newProfilePhoto, setNewProfilePhoto] = useState<File | null>(null)
   const [newProfilePhotoUrl, setNewProfilePhotoUrl] = useState<string | null>(null)
   const [isBuffering, setIsBuffering] = useState(false)
+  const [isEditingDob, setIsEditingDob] = useState(false);
+  const [newDob, setNewDob] = useState(user?.dob || "");
 
   // Modal states
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -111,6 +113,38 @@ const EditProfilePage = () => {
   // Calculate user age
   const age = user?.dob ? calculateAge(user.dob) : null
   const utr = user?.UTR || "No UTR"
+
+  // DOB Input
+  const handleDobSave = async () => {
+    if (!user || !newDob) return;
+  
+    const token = localStorage.getItem("token");
+    if (!token) return;
+  
+    try {
+      setErrorMessage("");
+      const response = await axios.put(
+        `${BACKEND_BASE_URL}/user/${user.userId}/update-dob`,
+        { dob: newDob },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      setUser((prevUser: any) => ({
+        ...prevUser,
+        dob: response.data.user.dob,
+      }));
+  
+      setIsEditingDob(false);
+      setSuccessMessage("Date of Birth updated successfully!");
+    } catch (error) {
+      console.error("Error updating DOB:", error);
+      setErrorMessage("Failed to update Date of Birth. Please try again.");
+    }
+  };
 
   // Handle file selection for media upload
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -692,6 +726,8 @@ const EditProfilePage = () => {
                     transition={{ duration: 0.3 }}
                     className="mb-8"
                   >
+
+                    {/* Bio */}
                     <div className="mb-6">
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="text-lg font-semibold text-gray-900">Bio</h3>
@@ -742,7 +778,57 @@ const EditProfilePage = () => {
                         </div>
                       )}
                     </div>
+                      
+                    {/* DOB */}
+                    <div className="mb-6">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="text-lg font-semibold text-gray-900">Date of Birth</h3>
+                        {!isEditingDob && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setNewDob(user?.dob || "");
+                              setIsEditingDob(true);
+                            }}
+                            className="text-blue-600 hover:text-blue-800"
+                          >
+                            <Edit2 size={16} className="mr-2" />
+                            Edit
+                          </Button>
+                        )}
+                      </div>
 
+                      {isEditingDob ? (
+                        <div className="space-y-3">
+                          <input
+                            type="date"
+                            value={newDob}
+                            onChange={(e) => setNewDob(e.target.value)}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                          />
+                          <div className="flex justify-end space-x-2">
+                            <Button variant="outline" onClick={() => setIsEditingDob(false)}>
+                              Cancel
+                            </Button>
+                            <Button onClick={handleDobSave} className="bg-blue-600 hover:bg-blue-700 text-white">
+                              <Save size={16} className="mr-2" />
+                              Save DOB
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="bg-gray-50 p-4 rounded-lg">
+                          {user?.dob ? (
+                            <p className="text-gray-700">{new Date(user.dob).toLocaleDateString()}</p>
+                          ) : (
+                            <p className="text-gray-400 italic">No DOB added yet. Click edit to add your DOB.</p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* UTR Tennis Level */}
                     <div className="mb-6">
                       <h3 className="text-lg font-semibold text-gray-900 mb-2">Tennis Level</h3>
                       <div className="bg-gray-50 p-4 rounded-lg flex items-center">

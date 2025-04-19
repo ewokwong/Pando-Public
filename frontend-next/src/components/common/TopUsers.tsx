@@ -66,10 +66,6 @@ const TopUsers: React.FC = () => {
             alert("You need to create an account first to send a connection request to this player!");
             window.location.href = "/sign-up"
         }
-
-      // Replace this with actual functionality, such as an API call
-    //   console.log(`Connect request sent to ${user.name} (ID: ${user.userId})`);
-    //   alert(`Connect request sent to ${user.name}`);
     }
   };
 
@@ -107,13 +103,13 @@ const TopUsers: React.FC = () => {
             </div>
           )}
         </div>
-
+  
         {user.bio && (
           <div className="bg-gray-50 rounded-lg p-3 text-center mb-4">
             <p className="text-sm text-gray-600">{user.bio}</p>
           </div>
         )}
-
+  
         {user.UTR && (
           <div className="flex items-center justify-center mb-4">
             <div className="inline-flex items-center px-3 py-1.5 bg-tennis-yellow/20 text-gray-700 rounded-md text-sm">
@@ -122,46 +118,59 @@ const TopUsers: React.FC = () => {
             </div>
           </div>
         )}
-
-        {user.media?.length > 0 && (
-        <div className="mb-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {user.media.map((mediaUrl, index) => (
-                <div
-                key={index}
-                className="relative border border-gray-200 rounded-lg overflow-hidden"
-                >
-                <VideoPlayer id={`video-${index}`} publicId={mediaUrl} />
-                </div>
-            ))}
-            </div>
-        </div>
+  
+        {/* User Preferences Section */}
+        {user.userPreferences && (
+          <div className="mb-4">
+            <h3 className="text-base font-semibold text-gray-900 mb-2">Looking for:</h3>
+            <ul className="list-disc list-inside text-sm text-gray-600">
+              {user.userPreferences.fun_social && <li>Fun & Social</li>}
+              {user.userPreferences.training_for_competitions && <li>Training for Competitions</li>}
+              {user.userPreferences.fitness && <li>Fitness</li>}
+              {user.userPreferences.learning_tennis && <li>Learning Tennis</li>}
+            </ul>
+          </div>
         )}
-
+  
+        {user.media?.length > 0 && (
+          <div className="mb-4">
+            <h3 className="text-base font-semibold text-gray-900 mb-2">Media</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {user.media.map((mediaUrl, index) => (
+                <div
+                  key={index}
+                  className="relative border border-gray-200 rounded-lg overflow-hidden"
+                >
+                  <VideoPlayer id={`video-${index}`} publicId={mediaUrl} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+  
         <div className="mt-6">
-        <motion.div
+          <motion.div
             className="p-4 bg-blue-500 rounded-lg border border-blue-500 hover:shadow-md transition-all"
             whileHover={{ x: 5 }}
             onClick={handleConnect}
-        >
+          >
             <div className="flex items-start">
-            <div className="bg-blue-600 p-2 rounded-full mr-3 mt-1 flex-shrink-0">
+              <div className="bg-blue-600 p-2 rounded-full mr-3 mt-1 flex-shrink-0">
                 <Heart size={18} className="text-white" />
-            </div>
-            <div>
+              </div>
+              <div>
                 <h3 className="text-sm font-medium text-white flex items-center">
-                Connect with this player!
+                  Connect with this player!
                 </h3>
                 <p className="text-xs text-white mt-1 leading-relaxed">
-                Send a connection request to start interacting with this player.
+                  Send a connection request to start interacting with this player.
                 </p>
+              </div>
             </div>
-            </div>
-        </motion.div>
+          </motion.div>
         </div>
       </div>
     </div>
   );
-};
-
+}
 export default TopUsers;
