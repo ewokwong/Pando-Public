@@ -91,12 +91,22 @@ const SignUpPage: React.FC = () => {
   }
 
   const openInBrowser = () => {
-    // This function would ideally open the default browser
-    // But since we can't directly do that from a web app,
-    // we'll just provide instructions
-    setToastMessage("Please open this link in your default browser")
-    setShowToast(true)
-  }
+    const userAgent = navigator.userAgent || navigator.vendor;
+  
+    let browserUrl = "https://pandotennis.vercel.app"; // Default URL
+  
+    if (/iPhone|iPad|iPod/i.test(userAgent)) {
+      // iOS device detected
+      browserUrl = `x-safari-${browserUrl}`;
+    } else if (/Android/i.test(userAgent)) {
+      // Android device detected
+      browserUrl = `googlechromes://${browserUrl}`;
+    }
+  
+    setToastMessage("Please open this link in your default browser");
+    setShowToast(true);
+    window.location.href = browserUrl;
+  };
 
   if (isRestricted) {
     return (
