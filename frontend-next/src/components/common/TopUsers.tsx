@@ -8,10 +8,6 @@ import { calculateAge } from "@/utils/dateUtils";
 import { DEFAULT_PROFILE_PHOTO } from "@/constants/defaults";
 import { motion } from "framer-motion"
 import { useAuth } from "@/context/AuthContext"
-import { AdvancedVideo } from "@cloudinary/react";
-import { Cloudinary } from "@cloudinary/url-gen";
-import { thumbnail } from "@cloudinary/url-gen/actions/resize";
-import { focusOn, Gravity } from "@cloudinary/url-gen/qualifiers/gravity";
 
 interface User {
   userId: string;
@@ -39,13 +35,6 @@ const TopUsers: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const { isLoggedIn } = useAuth(); // Ensure this is imported correctly}
-
-  // For videos
-  const cld = new Cloudinary({
-    cloud: {
-      cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME, // Replace with your Cloudinary cloud name
-    },
-  });
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -133,30 +122,20 @@ const TopUsers: React.FC = () => {
           </div>
         )}
 
-
-
         {user.media?.length > 0 && (
         <div className="mb-4">
             <h3 className="text-base font-semibold text-gray-900 mb-2">Media</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {user.media.map((mediaUrl, index) => {
-                // Extract public ID from the media URL
-                const publicId = mediaUrl.split("/").pop()?.split(".")[0];
-
-                // Generate video thumbnail
-                const videoThumbnail = cld.video(publicId).resize(
-                thumbnail().width(300).height(200).gravity(Gravity.autoGravity())
-                );
-
-                return (
+            {user.media.map((mediaUrl, index) => (
                 <div
-                    key={index}
-                    className="relative border border-gray-200 rounded-lg overflow-hidden h-48 group"
+                key={index}
+                className="relative border border-gray-200 rounded-lg overflow-hidden h-48 group"
                 >
+                {mediaUrl.endsWith(".mp4") || mediaUrl.endsWith(".webm") ? (
                     <div className="relative w-full h-full">
                     {/* Thumbnail for the video */}
                     <img
-                        src={videoThumbnail.toURL()} // Cloudinary-generated thumbnail URL
+                        src={`${mediaUrl}#t=1`} // Use the first frame of the video as a thumbnail
                         alt={`Thumbnail for video ${index}`}
                         className="w-full h-full object-cover"
                     />
@@ -194,16 +173,22 @@ const TopUsers: React.FC = () => {
                         </svg>
                     </button>
                     {/* Video element hidden initially */}
-                    <AdvancedVideo
-                        cldVid={cld.video(publicId)} // Cloudinary video instance
+                    <video
+                        src={mediaUrl}
                         className="w-full h-full object-cover hidden"
                         controls
                         preload="none" // Prevent preloading
                     />
                     </div>
+                ) : (
+                    <img
+                    src={mediaUrl || "/placeholder.svg"}
+                    alt={`Media ${index}`}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                )}
                 </div>
-                );
-            })}
+            ))}
             </div>
         </div>
         )}
