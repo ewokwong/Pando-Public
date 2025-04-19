@@ -83,7 +83,7 @@ const LoginPage: React.FC = () => {
   const openInBrowser = () => {
     const userAgent = navigator.userAgent || navigator.vendor;
   
-    let browserUrl = "https://pandotennis.vercel.app"; // Default URL
+    let browserUrl = "https://pandotennis.vercel.app/login"; // Default URL
   
     if (/iPhone|iPad|iPod/i.test(userAgent)) {
       // iOS device detected
