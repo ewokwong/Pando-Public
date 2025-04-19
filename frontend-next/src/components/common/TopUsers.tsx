@@ -9,6 +9,7 @@ import { DEFAULT_PROFILE_PHOTO } from "@/constants/defaults";
 import { motion } from "framer-motion"
 import { useAuth } from "@/context/AuthContext"
 import VideoPlayer from "./VideoPlayer";
+import { getPreferenceLabel } from "@/utils/preferenceUtils";
 
 interface User {
   userId: string;
@@ -84,53 +85,69 @@ const TopUsers: React.FC = () => {
   return (
     <div className="bg-white rounded-xl overflow-hidden w-full mx-auto shadow-md pb-5">
       <div className="p-6">
-        <div className="flex flex-col items-center mb-4">
-          <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-brand-100 mb-3">
-            <img
-              src={user.profilePhoto || DEFAULT_PROFILE_PHOTO}
-              alt={user.name}
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <h3 className="text-xl font-bold text-gray-900 mb-2">
-            {user.name}
-            {user.dob ? `, ${calculateAge(user.dob)}` : ""}
-          </h3>
-          {user.location?.displayName && (
-            <div className="flex items-center text-sm text-gray-500">
-              <MapPin size={16} className="mr-1" />
-              {user.location.displayName}
+
+        {/* Profile Header */}
+        <div className="flex items-center mb-4">
+            {/* Profile Photo */}
+            <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-brand-100 mr-4">
+                <img
+                src={user.profilePhoto || DEFAULT_PROFILE_PHOTO}
+                alt={user.name}
+                className="w-full h-full object-cover"
+                />
             </div>
-          )}
+
+            {/* Name, Location, and UTR */}
+            <div>
+                <h3 className="text-xl font-bold text-gray-900">
+                {user.name}
+                {user.dob ? `, ${calculateAge(user.dob)}` : ""}
+                </h3>
+                {user.location?.displayName && (
+                <div className="flex items-center text-sm text-gray-500 mt-1">
+                    <MapPin size={16} className="mr-1" />
+                    {user.location.displayName}
+                </div>
+                )}
+                {user.UTR && (
+                    <div className="flex items-center text-sm text-gray-700 mt-1">
+                        <Trophy size={16} className="mr-1 text-tennis-yellow" />
+                        UTR: {user.UTR}
+                    </div>
+                )}
+            </div>
         </div>
   
+        {/* Bio */}
         {user.bio && (
-          <div className="bg-gray-50 rounded-lg p-3 text-center mb-4">
+          <div className="bg-gray-50 rounded-lg p-3 text-left mb-3">
             <p className="text-sm text-gray-600">{user.bio}</p>
-          </div>
-        )}
-  
-        {user.UTR && (
-          <div className="flex items-center justify-center mb-4">
-            <div className="inline-flex items-center px-3 py-1.5 bg-tennis-yellow/20 text-gray-700 rounded-md text-sm">
-              <Trophy size={16} className="mr-2" />
-              UTR: {user.UTR}
-            </div>
           </div>
         )}
   
         {/* User Preferences Section */}
         {user.userPreferences && (
-          <div className="mb-4">
-            <h3 className="text-base font-semibold text-gray-900 mb-2">Looking for:</h3>
-            <ul className="list-disc list-inside text-sm text-gray-600">
-              {user.userPreferences.fun_social && <li>Fun & Social</li>}
-              {user.userPreferences.training_for_competitions && <li>Training for Competitions</li>}
-              {user.userPreferences.fitness && <li>Fitness</li>}
-              {user.userPreferences.learning_tennis && <li>Learning Tennis</li>}
-            </ul>
-          </div>
-        )}
+            <div className="mb-3">
+                <h3 className="text-base font-semibold text-gray-900 mb-2">Looking for</h3>
+                {Object.values(user.userPreferences).some((value) => value) ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {Object.entries(user.userPreferences).map(
+                    ([key, value]) =>
+                        value && (
+                        <div
+                            key={key}
+                            className="px-3 py-2 rounded-md text-center text-xs font-medium bg-blue-100 text-blue-700"
+                        >
+                            {getPreferenceLabel(key)}
+                        </div>
+                        )
+                    )}
+                </div>
+                ) : (
+                <p className="text-gray-500 text-sm">User has not yet added their preferences :(</p>
+                )}
+            </div>
+            )}
   
         {user.media?.length > 0 && (
           <div className="mb-4">
