@@ -21,16 +21,20 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, publicId, width = 16, hei
   const playerRef = useRef<any>(null);
 
   useEffect(() => {
+    console.log("Initializing Cloudinary...");
     if (cloudinaryRef.current) return;
-
-    // Initialize Cloudinary video player
+  
     cloudinaryRef.current = window.cloudinary;
-
+  
     if (cloudinaryRef.current && videoRef.current) {
+      console.log("Cloudinary and videoRef are ready.");
+      console.log("Video Ref:", videoRef.current)
       playerRef.current = cloudinaryRef.current.videoPlayer(videoRef.current, {
-        cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME, // Use your Cloudinary cloud name
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
         secure: true,
       });
+      console.log("Player initialized:", playerRef.current);
+      console.log("Cloudinary Cloud Name:", process.env.CLOUDINARY_CLOUD_NAME);
     }
   }, []);
 
