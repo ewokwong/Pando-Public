@@ -23,6 +23,7 @@ import {
 } from "lucide-react"
 import { motion } from "framer-motion"
 import Link from "next/link"
+import TopUsers from "@/components/common/TopUsers"
 
 // Define the type for resource data
 interface ResourceData {
@@ -194,180 +195,184 @@ const HomePage: React.FC = () => {
           {/* Add the new banner component */}
           <AppBanner className="mb-6" />
 
-          {/* Main Content */}
+          {/* Left Column */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* How to Pando Box */}
-            <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-lg p-6 hover:bg-white/15 transition-colors">
-              <div className="flex items-center mb-4">
-                <Book size={20} className="text-green-400 mr-3" />
-                <h2 className="text-xl font-semibold text-white">How to: Pando</h2>
+
+            {/* This Week's Top Users Box */}
+            <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-lg p-4">
+              <div className="flex items-center mb-3">
+                <Info size={18} className="text-blue-400 mr-2" />
+                <h2 className="text-lg font-semibold text-white">This Week's Top Users</h2>
               </div>
-              <p className="text-gray-200 text-sm mb-5">Get started with Pando:</p>
-
-              <div className="mt-4 space-y-4">
-                {/* Step 0: Sign Up */}
-                <Link href="/sign-up" className="block">
-                  <motion.div
-                    className="p-4 bg-white rounded-lg border border-indigo-500/30 hover:shadow-md transition-all"
-                    whileHover={{ x: 5 }}
-                  >
-                    <div className="flex items-center min-h-[40px]">
-                      <div className="bg-indigo-500/20 p-2 rounded-full mr-3 flex-shrink-0">
-                        <UserCircle size={18} className="text-indigo-500" />
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-medium text-gray-800 flex items-center">
-                          Step 1: Create Your Account
-                          <span className="ml-2 text-xs bg-indigo-500 px-2 py-0.5 rounded text-white hover:bg-indigo-600 transition-colors">
-                            Sign Up
-                          </span>
-                        </h3>
-                      </div>
-                    </div>
-                  </motion.div>
-                </Link>
-
-                {/* Step 1: Complete Profile */}
-                <motion.div
-                  className="p-4 bg-white rounded-lg border border-green-500/30 hover:shadow-md transition-all"
-                  whileHover={{ x: 5 }}
-                >
-                  <div className="flex items-start">
-                    <div className="bg-green-500/20 p-2 rounded-full mr-3 flex-shrink-0">
-                      <CheckCircle2 size={18} className="text-green-500" />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-medium text-gray-800 flex items-center">
-                        Step 2: Complete Your Profile
-                      </h3>
-                      <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                        Look for the yellow banner at the top of the page! If it's not there, you have already completed
-                        this step.
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Optional Step: Add More Profile Info */}
-                <Link href="/edit-profile" className="block">
-                  <motion.div
-                    className="p-4 bg-white rounded-lg border border-orange-500/30 hover:shadow-md transition-all"
-                    whileHover={{ x: 5 }}
-                  >
-                    <div className="flex items-start">
-                      <div className="bg-orange-500/20 p-2 rounded-full mr-3 flex-shrink-0">
-                        <UserCircle size={18} className="text-orange-500" />
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-medium text-gray-800 flex items-center">
-                          Optional: Add in more profile info
-                          <span className="ml-2 text-xs bg-orange-500 px-2 py-0.5 rounded text-white hover:bg-orange-600 transition-colors">
-                            Edit Profile
-                          </span>
-                        </h3>
-                        <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                          Add in a profile picture, your bio and preferences!
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-                </Link>
-
-                {/* Step 3: Make Connections */}
-                <Link href="/find-friends" className="block">
-                  <motion.div
-                    className="p-4 bg-white rounded-lg border border-blue-500/30 hover:shadow-md transition-all"
-                    whileHover={{ x: 5 }}
-                  >
-                    <div className="flex items-start">
-                      <div className="bg-blue-500/20 p-2 rounded-full mr-3 flex-shrink-0">
-                        <UserPlus size={18} className="text-blue-500" />
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-medium text-gray-800 flex items-center">
-                          Step 3: Make Your First Connection
-                          <span className="ml-2 text-xs bg-blue-500 px-2 py-0.5 rounded text-white hover:bg-blue-600 transition-colors">
-                            Go Now
-                          </span>
-                        </h3>
-                        <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                          You can either match with users by accepting their incoming request, or if you send them a
-                          request and they accept!
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-                </Link>
-
-                {/* Step 4: Chat */}
-                <Link href="/messages" className="block">
-                  <motion.div
-                    className="p-4 bg-white rounded-lg border border-yellow-500/30 hover:shadow-md transition-all"
-                    whileHover={{ x: 5 }}
-                  >
-                    <div className="flex items-start">
-                      <div className="bg-yellow-500/20 p-2 rounded-full mr-3 flex-shrink-0">
-                        <MessageCircle size={18} className="text-yellow-500" />
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-medium text-gray-800 flex items-center mt-1.5">
-                          Step 4: Chat and Arrange Matches
-                          <span className="ml-2 text-xs bg-yellow-500 px-2 py-0.5 rounded text-white hover:bg-yellow-600 transition-colors">
-                            Messages
-                          </span>
-                        </h3>
-                      </div>
-                    </div>
-                  </motion.div>
-                </Link>
-
-                {/* Step 5: Feedback */}
-                <a
-                  href="https://forms.gle/i29f223SgHgJ2isP6"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block"
-                >
-                  <motion.div
-                    className="p-4 bg-white rounded-lg border border-pink-500/30 hover:shadow-md transition-all"
-                    whileHover={{ x: 5 }}
-                  >
-                    <div className="flex items-start">
-                      <div className="bg-pink-500/20 p-2 rounded-full mr-3 flex-shrink-0">
-                        <ThumbsUp size={18} className="text-pink-500" />
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-medium text-gray-800 flex items-center mt-1.5">
-                          Step 5: Share Your Feedback
-                          <span className="ml-2 text-xs bg-pink-500 px-2 py-0.5 rounded text-white hover:bg-pink-600 transition-colors flex items-center">
-                            Feedback <ExternalLink size={10} className="ml-1" />
-                          </span>
-                        </h3>
-                      </div>
-                    </div>
-                  </motion.div>
-                </a>
+              <div className="flex flex-col items-center justify-center h-[calc(100%-60px)]">
+                <TopUsers />
+                {/* <div className="text-center p-4">
+                  <h3 className="text-xl font-semibold text-white mb-2">Stay tuned, coming soon!</h3>
+                  <p className="text-gray-300">Our leaderboard feature is under development.</p>
+                </div> */}
               </div>
             </div>
 
-            {/* Two Main Boxes */}
+            
+
+            {/* Right Column */}
             <div className="flex flex-col gap-6 h-auto md:h-[70vh]">
-              {/* This Week's Top Users Box */}
-              <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                <div className="flex items-center mb-3">
-                  <Info size={18} className="text-blue-400 mr-2" />
-                  <h2 className="text-lg font-semibold text-white">This Week's Top Users</h2>
+              {/* How to Pando Box */}
+              <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-lg p-6 hover:bg-white/15 transition-colors">
+                <div className="flex items-center mb-4">
+                  <Book size={20} className="text-green-400 mr-3" />
+                  <h2 className="text-xl font-semibold text-white">How to: Pando</h2>
                 </div>
-                <div className="flex flex-col items-center justify-center h-[calc(100%-60px)]">
-                  <div className="text-center p-4">
-                    <h3 className="text-xl font-semibold text-white mb-2">Stay tuned, coming soon!</h3>
-                    <p className="text-gray-300">Our leaderboard feature is under development.</p>
-                  </div>
+                <p className="text-gray-200 text-sm mb-5">Get started with Pando:</p>
+
+                <div className="mt-4 space-y-4">
+                  {/* Step 0: Sign Up */}
+                  <Link href="/sign-up" className="block">
+                    <motion.div
+                      className="p-4 bg-white rounded-lg border border-indigo-500/30 hover:shadow-md transition-all"
+                      whileHover={{ x: 5 }}
+                    >
+                      <div className="flex items-center min-h-[40px]">
+                        <div className="bg-indigo-500/20 p-2 rounded-full mr-3 flex-shrink-0">
+                          <UserCircle size={18} className="text-indigo-500" />
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-medium text-gray-800 flex items-center">
+                            Step 1: Create Your Account
+                            <span className="ml-2 text-xs bg-indigo-500 px-2 py-0.5 rounded text-white hover:bg-indigo-600 transition-colors">
+                              Sign Up
+                            </span>
+                          </h3>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </Link>
+
+                  {/* Step 1: Complete Profile */}
+                  <motion.div
+                    className="p-4 bg-white rounded-lg border border-green-500/30 hover:shadow-md transition-all"
+                    whileHover={{ x: 5 }}
+                  >
+                    <div className="flex items-start">
+                      <div className="bg-green-500/20 p-2 rounded-full mr-3 flex-shrink-0">
+                        <CheckCircle2 size={18} className="text-green-500" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-800 flex items-center">
+                          Step 2: Complete Your Profile
+                        </h3>
+                        <p className="text-xs text-gray-600 mt-1 leading-relaxed">
+                          Look for the yellow banner at the top of the page! If it's not there, you have already completed
+                          this step.
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Optional Step: Add More Profile Info */}
+                  <Link href="/edit-profile" className="block">
+                    <motion.div
+                      className="p-4 bg-white rounded-lg border border-orange-500/30 hover:shadow-md transition-all"
+                      whileHover={{ x: 5 }}
+                    >
+                      <div className="flex items-start">
+                        <div className="bg-orange-500/20 p-2 rounded-full mr-3 flex-shrink-0">
+                          <UserCircle size={18} className="text-orange-500" />
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-medium text-gray-800 flex items-center">
+                            Optional: Add in more profile info
+                            <span className="ml-2 text-xs bg-orange-500 px-2 py-0.5 rounded text-white hover:bg-orange-600 transition-colors">
+                              Edit Profile
+                            </span>
+                          </h3>
+                          <p className="text-xs text-gray-600 mt-1 leading-relaxed">
+                            Add in a profile picture, your bio and preferences!
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </Link>
+
+                  {/* Step 3: Make Connections */}
+                  <Link href="/find-friends" className="block">
+                    <motion.div
+                      className="p-4 bg-white rounded-lg border border-blue-500/30 hover:shadow-md transition-all"
+                      whileHover={{ x: 5 }}
+                    >
+                      <div className="flex items-start">
+                        <div className="bg-blue-500/20 p-2 rounded-full mr-3 flex-shrink-0">
+                          <UserPlus size={18} className="text-blue-500" />
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-medium text-gray-800 flex items-center">
+                            Step 3: Make Your First Connection
+                            <span className="ml-2 text-xs bg-blue-500 px-2 py-0.5 rounded text-white hover:bg-blue-600 transition-colors">
+                              Go Now
+                            </span>
+                          </h3>
+                          <p className="text-xs text-gray-600 mt-1 leading-relaxed">
+                            You can either match with users by accepting their incoming request, or if you send them a
+                            request and they accept!
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </Link>
+
+                  {/* Step 4: Chat */}
+                  <Link href="/messages" className="block">
+                    <motion.div
+                      className="p-4 bg-white rounded-lg border border-yellow-500/30 hover:shadow-md transition-all"
+                      whileHover={{ x: 5 }}
+                    >
+                      <div className="flex items-start">
+                        <div className="bg-yellow-500/20 p-2 rounded-full mr-3 flex-shrink-0">
+                          <MessageCircle size={18} className="text-yellow-500" />
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-medium text-gray-800 flex items-center mt-1.5">
+                            Step 4: Chat and Arrange Matches
+                            <span className="ml-2 text-xs bg-yellow-500 px-2 py-0.5 rounded text-white hover:bg-yellow-600 transition-colors">
+                              Messages
+                            </span>
+                          </h3>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </Link>
+
+                  {/* Step 5: Feedback */}
+                  <a
+                    href="https://forms.gle/i29f223SgHgJ2isP6"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block"
+                  >
+                    <motion.div
+                      className="p-4 bg-white rounded-lg border border-pink-500/30 hover:shadow-md transition-all"
+                      whileHover={{ x: 5 }}
+                    >
+                      <div className="flex items-start">
+                        <div className="bg-pink-500/20 p-2 rounded-full mr-3 flex-shrink-0">
+                          <ThumbsUp size={18} className="text-pink-500" />
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-medium text-gray-800 flex items-center mt-1.5">
+                            Step 5: Share Your Feedback
+                            <span className="ml-2 text-xs bg-pink-500 px-2 py-0.5 rounded text-white hover:bg-pink-600 transition-colors flex items-center">
+                              Feedback <ExternalLink size={10} className="ml-1" />
+                            </span>
+                          </h3>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </a>
                 </div>
               </div>
 
               {/* Resources Box */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 h-auto md:h-[80vh]">
+              {/* <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 h-auto md:h-[80vh]">
                 <div className="flex items-center mb-4">
                   <div className="mb-2 flex items-center pl-1 h-full">
                     <BookOpenCheck size={18} className="text-blue-500 mr-2" />
@@ -380,7 +385,7 @@ const HomePage: React.FC = () => {
                     <p className="text-gray-300">We're working on bringing you the best tennis resources.</p>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
