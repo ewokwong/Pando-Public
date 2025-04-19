@@ -22,10 +22,15 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, publicId, width = 16, hei
 
   useEffect(() => {
     console.log("Initializing Cloudinary...");
+    console.log("Cloudinary Cloud Name:", process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME);
+
     if (cloudinaryRef.current) return;
   
+    console.log("Cloudinary is not initialized, setting up...");
     cloudinaryRef.current = window.cloudinary;
   
+    console.log("Cloudinary initialized:", cloudinaryRef.current);
+    console.log("Video Ref:", videoRef.current);
     if (cloudinaryRef.current && videoRef.current) {
       console.log("Cloudinary and videoRef are ready.");
       console.log("Video Ref:", videoRef.current)
@@ -34,7 +39,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, publicId, width = 16, hei
         secure: true,
       });
       console.log("Player initialized:", playerRef.current);
-      console.log("Cloudinary Cloud Name:", process.env.CLOUDINARY_CLOUD_NAME);
     }
   }, []);
 
