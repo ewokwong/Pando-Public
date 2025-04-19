@@ -123,70 +123,74 @@ const TopUsers: React.FC = () => {
         )}
 
         {user.media?.length > 0 && (
-            <div className="mb-4">
-                <h3 className="text-base font-semibold text-gray-900 mb-2">Media</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {user.media.map((mediaUrl, index) => (
-                    <div
-                    key={index}
-                    className="relative border border-gray-200 rounded-lg overflow-hidden h-48 group"
+        <div className="mb-4">
+            <h3 className="text-base font-semibold text-gray-900 mb-2">Media</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {user.media.map((mediaUrl, index) => (
+                <div
+                key={index}
+                className="relative border border-gray-200 rounded-lg overflow-hidden h-48 group"
+                >
+                {mediaUrl.endsWith(".mp4") || mediaUrl.endsWith(".webm") ? (
+                    <div className="relative w-full h-full">
+                    {/* Thumbnail for the video */}
+                    <img
+                        src={`${mediaUrl}#t=1`} // Use the first frame of the video as a thumbnail
+                        alt={`Thumbnail for video ${index}`}
+                        className="w-full h-full object-cover"
+                    />
+                    {/* Play button overlay */}
+                    <button
+                        className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white rounded-lg transition-opacity duration-300 group-hover:opacity-100"
+                        onClick={(e) => {
+                        const videoElement = e.currentTarget.parentElement?.querySelector(
+                            "video"
+                        ) as HTMLVideoElement;
+                        const thumbnailElement = e.currentTarget.parentElement?.querySelector(
+                            "img"
+                        );
+                        if (videoElement && thumbnailElement) {
+                            thumbnailElement.classList.add("hidden"); // Hide the thumbnail
+                            videoElement.classList.remove("hidden"); // Show the video
+                            videoElement.play(); // Play the video
+                            e.currentTarget.classList.add("hidden"); // Hide the play button
+                        }
+                        }}
                     >
-                    {mediaUrl.endsWith(".mp4") || mediaUrl.endsWith(".webm") ? (
-                        <div className="relative w-full h-full">
-                        <video
-                            src={mediaUrl}
-                            className="w-full h-full object-cover hidden" // Hide the video initially
-                            controls
-                        />
-                        <img
-                            src={`${mediaUrl}#t=1`} // Use the first frame of the video as a thumbnail
-                            alt={`Thumbnail for video ${index}`}
-                            className="w-full h-full object-cover"
-                        />
-                        <button
-                            className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white rounded-lg transition-opacity duration-300 group-hover:opacity-100"
-                            onClick={(e) => {
-                            const videoElement = (e.currentTarget.parentElement?.querySelector(
-                                "video"
-                            ) as HTMLVideoElement);
-                            const thumbnailElement = e.currentTarget.parentElement?.querySelector(
-                                "img"
-                            );
-                            if (videoElement && thumbnailElement) {
-                                thumbnailElement.classList.add("hidden"); // Hide the thumbnail
-                                videoElement.classList.remove("hidden"); // Show the video
-                                videoElement.play(); // Play the video
-                                e.currentTarget.classList.add("hidden"); // Hide the play button
-                            }
-                            }}
+                        <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-12 w-12"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
                         >
-                            <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-12 w-12"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M14.752 11.168l-5.197-3.013A1 1 0 008 9.05v5.9a1 1 0 001.555.832l5.197-3.013a1 1 0 000-1.664z"
-                            />
-                            </svg>
-                        </button>
-                        </div>
-                    ) : (
-                        <img
-                        src={mediaUrl || "/placeholder.svg"}
-                        alt={`Media ${index}`}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M14.752 11.168l-5.197-3.013A1 1 0 008 9.05v5.9a1 1 0 001.555.832l5.197-3.013a1 1 0 000-1.664z"
                         />
-                    )}
+                        </svg>
+                    </button>
+                    {/* Video element hidden initially */}
+                    <video
+                        src={mediaUrl}
+                        className="w-full h-full object-cover hidden"
+                        controls
+                        preload="none" // Prevent preloading
+                    />
                     </div>
-                ))}
+                ) : (
+                    <img
+                    src={mediaUrl || "/placeholder.svg"}
+                    alt={`Media ${index}`}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                )}
                 </div>
+            ))}
             </div>
+        </div>
         )}
 
         <div className="mt-6">
