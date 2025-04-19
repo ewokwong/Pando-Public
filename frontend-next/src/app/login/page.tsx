@@ -95,7 +95,7 @@ const LoginPage: React.FC = () => {
           <div className="auth-container fade-in">
             <div className="auth-inner">
               <div className="auth-header">
-                <h1 className="auth-title">Open in Browser</h1>
+                <h1 className="auth-title">Please open Pando in your browser</h1>
                 <p className="auth-subtitle">
                   It looks like you're using an app that restricts sign-in. Please open this page in your browser to
                   continue.

@@ -64,7 +64,7 @@ const TopUsers: React.FC = () => {
         if (isLoggedIn) { 
             window.location.href = "/search";
         } else {
-            alert("You need to create an account first to send a connection request to this player!");
+            alert("You need to create an account first before you can send a connection request to this player!");
             window.location.href = "/sign-up"
         }
     }
