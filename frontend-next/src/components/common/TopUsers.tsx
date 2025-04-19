@@ -8,6 +8,7 @@ import { calculateAge } from "@/utils/dateUtils";
 import { DEFAULT_PROFILE_PHOTO } from "@/constants/defaults";
 import { motion } from "framer-motion"
 import { useAuth } from "@/context/AuthContext"
+import VideoPlayer from "./VideoPlayer";
 
 interface User {
   userId: string;
@@ -129,64 +130,9 @@ const TopUsers: React.FC = () => {
             {user.media.map((mediaUrl, index) => (
                 <div
                 key={index}
-                className="relative border border-gray-200 rounded-lg overflow-hidden h-48 group"
+                className="relative border border-gray-200 rounded-lg overflow-hidden"
                 >
-                {mediaUrl.endsWith(".mp4") || mediaUrl.endsWith(".webm") ? (
-                    <div className="relative w-full h-full">
-                    {/* Thumbnail for the video */}
-                    <img
-                        src={`${mediaUrl}#t=1`} // Use the first frame of the video as a thumbnail
-                        alt={`Thumbnail for video ${index}`}
-                        className="w-full h-full object-cover"
-                    />
-                    {/* Play button overlay */}
-                    <button
-                        className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white rounded-lg transition-opacity duration-300 group-hover:opacity-100"
-                        onClick={(e) => {
-                        const videoElement = e.currentTarget.parentElement?.querySelector(
-                            "video"
-                        ) as HTMLVideoElement;
-                        const thumbnailElement = e.currentTarget.parentElement?.querySelector(
-                            "img"
-                        );
-                        if (videoElement && thumbnailElement) {
-                            thumbnailElement.classList.add("hidden"); // Hide the thumbnail
-                            videoElement.classList.remove("hidden"); // Show the video
-                            videoElement.play(); // Play the video
-                            e.currentTarget.classList.add("hidden"); // Hide the play button
-                        }
-                        }}
-                    >
-                        <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-12 w-12"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M14.752 11.168l-5.197-3.013A1 1 0 008 9.05v5.9a1 1 0 001.555.832l5.197-3.013a1 1 0 000-1.664z"
-                        />
-                        </svg>
-                    </button>
-                    {/* Video element hidden initially */}
-                    <video
-                        src={mediaUrl}
-                        className="w-full h-full object-cover hidden"
-                        controls
-                        preload="none" // Prevent preloading
-                    />
-                    </div>
-                ) : (
-                    <img
-                    src={mediaUrl || "/placeholder.svg"}
-                    alt={`Media ${index}`}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                )}
+                <VideoPlayer id={`video-${index}`} publicId={mediaUrl} />
                 </div>
             ))}
             </div>
