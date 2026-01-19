@@ -188,7 +188,7 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ className }) => {
         ) : (
           <>
             <img
-              src="https://res.cloudinary.com/dsnrydwvc/image/upload/v1743320517/png-transparent-google-company-text-logo-removebg-preview_jry9iw.png"
+              src="https://res.cloudinary.com/dsnrydwvc/image/upload/v1768801473/Google__G__logo.svg_aoc2po.png"
               alt="Google Logo"
               className="google-logo"
             />
