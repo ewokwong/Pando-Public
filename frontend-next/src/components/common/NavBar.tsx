@@ -63,7 +63,7 @@ const NavBar: React.FC = () => {
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center" legacyBehavior>
               <img
-                src="https://res.cloudinary.com/dsnrydwvc/image/upload/v1742612869/Pando/mzmqqozsnnlip70xwlef.svg"
+                src="https://res.cloudinary.com/dsnrydwvc/image/upload/v1768800568/Pando_logo_b7x06s.png"
                 alt="Pando Logo"
                 className="h-10 w-auto rounded-md"
               />

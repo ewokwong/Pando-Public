@@ -231,7 +231,7 @@ const FindFriendsPage = () => {
           transition={{ duration: 0.5 }}
         >
           <motion.img
-            src="https://res.cloudinary.com/dsnrydwvc/image/upload/v1742612869/Pando/mzmqqozsnnlip70xwlef.svg"
+            src="https://res.cloudinary.com/dsnrydwvc/image/upload/v1768800568/Pando_logo_b7x06s.png"
             alt="Pando Icon"
             className="w-24 h-24 mb-6"
             initial={{ scale: 0 }}

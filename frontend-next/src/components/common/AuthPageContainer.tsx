@@ -18,7 +18,7 @@ const AuthPageContainer: React.FC<AuthPageContainerProps> = ({ children, ...prop
                 loop 
                 playsInline
             >
-                <source src="https://res.cloudinary.com/dsnrydwvc/video/upload/v1743334534/Pando/xtajgl9boexhucbb5bh1.mp4" type="video/mp4" />
+                <source src="https://res.cloudinary.com/dsnrydwvc/video/upload/v1768800980/50109-459915579_medium_zczrtf.mp4" type="video/mp4" />
             </video>
             
             {/* Overlay */}

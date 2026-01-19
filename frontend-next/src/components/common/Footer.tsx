@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
           <div className="col-span-1 md:col-span-4">
             <div className="flex justify-start items-center mb-5">
               <img
-                src="https://res.cloudinary.com/dsnrydwvc/image/upload/v1742612869/Pando/mzmqqozsnnlip70xwlef.svg"
+                src="https://res.cloudinary.com/dsnrydwvc/image/upload/v1768800568/Pando_logo_b7x06s.png"
                 alt="Pando Logo"
                 className="h-14 w-auto rounded-md"
               />
