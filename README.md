@@ -1,3 +1,8 @@
+Pando: Heuristic-Based Tennis Partner Matchmaking System. Matches are based on:
+- UTR Level
+- Location
+- Playing preferences
+
 Simple MVP of Pando using:
 - React for Frontend
 - Node.js for Backend
